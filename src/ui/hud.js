@@ -209,6 +209,7 @@ export default class Hud {
     const waveNum = this.game.waveManager
       ? this.game.waveManager.getWaveNumber()
       : 0;
+
     this.el.innerHTML = `
       <div>Wave: ${waveNum}</div>
       <div>HP: ${Math.round(p.hp)} / ${Math.round(p.maxHp)}</div>

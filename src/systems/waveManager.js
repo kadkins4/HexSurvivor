@@ -68,13 +68,13 @@ export default class WaveManager {
   buildSpawnQueue() {
     // simple progression: base drones, add strikers after wave 3, add occasional tank
     const base = BASE_ENEMIES_SPAWNED + this.waveIndex * 2;
-    const strikers = Math.max(0, Math.floor((this.waveIndex - 2) / 2));
+    const chargers = Math.max(0, Math.floor((this.waveIndex - 2) / 2));
     const tanks = this.waveIndex % 5 === 0 ? 1 : 0;
-    const drones = Math.max(0, base - strikers * 2 - tanks * 3);
+    const drones = Math.max(0, base - chargers * 2 - tanks * 3);
 
     const q = [];
     for (let i = 0; i < drones; i++) q.push('drone');
-    for (let i = 0; i < strikers; i++) q.push('striker');
+    for (let i = 0; i < chargers; i++) q.push('charger');
     for (let i = 0; i < tanks; i++) q.push('tank');
 
     // simple shuffle
@@ -112,8 +112,8 @@ export default class WaveManager {
     let ent = null;
     if (type === 'drone')
       ent = Drone.spawnAtEdge(this.game.width, this.game.height);
-    else if (type === 'striker')
-      ent = Striker.spawnAtEdge(this.game.width, this.game.height);
+    else if (type === 'charger')
+      ent = Charger.spawnAtEdge(this.game.width, this.game.height);
     else if (type === 'tank')
       ent = Tank.spawnAtEdge(this.game.width, this.game.height);
     if (ent) this.game.enemies.push(ent);
