@@ -30,29 +30,29 @@ export const FLOATING_TEXT_LIFETIME = 0.9;
 export const BASE_ENEMIES_SPAWNED = 0;
 export const WAVE_SPAWN_INTERVAL = 0.3;
 
-// ENEMY (defaults)
+// ENEMY
 export const ENEMY_BASE_HP = 12;
 export const ENEMY_BASE_SPEED = 35;
 export const ENEMY_BASE_RADIUS = 12;
 export const ENEMY_CONTACT_DPS = 10;
 
-// DRONE (standard enemy)
+// DRONE
 export const DRONE_HP = 15;
 export const DRONE_SPEED = 45;
 export const DRONE_RADIUS = 10;
 
-// STRIKER (charger)
-export const STRIKER_HP = 10;
-export const STRIKER_APPROACH_SPEED = 35; // slow approach
-export const STRIKER_DASH_SPEED = 300; // fast ram
-export const STRIKER_CHARGE_RANGE = 175; // start charging when within this
-export const STRIKER_CHARGE_TIME = 1; // seconds to charge
-export const STRIKER_RADIUS = 8;
-export const STRIKER_EXPLODE_DAMAGE = 24;
-export const STRIKER_STATUS = {
+// CHARGER
+export const CHARGER_HP = 10;
+export const CHARGER_APPROACH_SPEED = 35; // slow approach
+export const CHARGER_CHARGE_SPEED = 300; // fast ram
+export const CHARGER_CHARGE_RANGE = 175; // start charging when within this
+export const CHARGER_CHARGE_TIME = 1; // seconds to charge
+export const CHARGER_RADIUS = 8;
+export const CHARGER_EXPLODE_DAMAGE = 24;
+export const CHARGER_STATUS = {
   APPROACH: 'approach',
+  FOCUSING: 'focusing',
   CHARGING: 'charging',
-  DASHING: 'dashing',
 };
 
 // TANK

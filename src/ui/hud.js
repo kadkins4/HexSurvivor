@@ -1,5 +1,5 @@
 import Drone from '../entities/enemy/enemies/drone.js';
-import Striker from '../entities/enemy/enemies/striker.js';
+import Charger from '../entities/enemy/enemies/charger.js';
 import Tank from '../entities/enemy/enemies/tank.js';
 import { icons } from './icons.js';
 
@@ -55,15 +55,15 @@ export default class Hud {
     this.rangeInput = this.panel.querySelector('#ctl-range');
 
     this.spawnDroneBtn = this.panel.querySelector('#spawn-drone');
-    this.spawnStrikerBtn = this.panel.querySelector('#spawn-striker');
+    this.spawnChargerBtn = this.panel.querySelector('#spawn-charger');
     this.spawnTankBtn = this.panel.querySelector('#spawn-tank');
     this.spawnMultiBtn = this.panel.querySelector('#spawn-multi');
     this.countDrone = this.panel.querySelector('#count-drone');
-    this.countStriker = this.panel.querySelector('#count-striker');
+    this.countCharger = this.panel.querySelector('#count-charger');
     this.countTank = this.panel.querySelector('#count-tank');
 
     this.customDrones = this.panel.querySelector('#custom-drones');
-    this.customStrikers = this.panel.querySelector('#custom-strikers');
+    this.customChargers = this.panel.querySelector('#custom-chargers');
     this.customTanks = this.panel.querySelector('#custom-tanks');
 
     this.startCustomBtn = this.panel.querySelector('#start-custom-wave');
@@ -84,9 +84,9 @@ export default class Hud {
         const e = Drone.spawnAtEdge(this.game.width, this.game.height);
         this.game.enemies.push(e);
       });
-    if (this.spawnStrikerBtn)
-      this.spawnStrikerBtn.addEventListener('click', () => {
-        const e = Striker.spawnAtEdge(this.game.width, this.game.height);
+    if (this.spawnChargerBtn)
+      this.spawnChargerBtn.addEventListener('click', () => {
+        const e = Charger.spawnAtEdge(this.game.width, this.game.height);
         this.game.enemies.push(e);
       });
     if (this.spawnTankBtn)
@@ -98,7 +98,7 @@ export default class Hud {
     if (this.spawnMultiBtn)
       this.spawnMultiBtn.addEventListener('click', () => {
         const d = Number(this.countDrone.value) || 0;
-        const s = Number(this.countStriker.value) || 0;
+        const c = Number(this.countCharger.value) || 0;
         const t = Number(this.countTank.value) || 0;
         for (let i = 0; i < d; i++)
           this.game.enemies.push(

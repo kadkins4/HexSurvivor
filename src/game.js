@@ -1,8 +1,5 @@
 import Player from './entities/player.js';
 import Hud from './ui/hud.js';
-import Drone from './entities/enemy/enemies/drone.js';
-import Striker from './entities/enemy/enemies/striker.js';
-import Tank from './entities/enemy/enemies/tank.js';
 import Projectile from './entities/projectile.js';
 import FloatingText from './ui/floatingText.js';
 import Explosion from './ui/explosion.js';
@@ -37,7 +34,6 @@ const Game = {
     this.player = new Player(this.width / 2, this.height / 2);
     this.hud = new Hud(uiRoot, this);
 
-    // spawn a few enemies for demo (wave manager will handle waves)
     this.waveManager = new WaveManager(this);
     this.waveManager.startNextWave();
 

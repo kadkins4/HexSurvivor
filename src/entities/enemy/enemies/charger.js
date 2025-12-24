@@ -1,26 +1,27 @@
 import Enemy from '../enemy.js';
 import {
-  STRIKER_HP,
-  STRIKER_APPROACH_SPEED,
-  STRIKER_DASH_SPEED,
-  STRIKER_CHARGE_RANGE,
-  STRIKER_CHARGE_TIME,
-  STRIKER_RADIUS,
-  STRIKER_EXPLODE_DAMAGE,
-  STRIKER_STATUS,
+  CHARGER_HP,
+  CHARGER_APPROACH_SPEED,
+  CHARGER_CHARGE_SPEED,
+  CHARGER_CHARGE_RANGE,
+  CHARGER_CHARGE_TIME,
+  CHARGER_RADIUS,
+  CHARGER_EXPLODE_DAMAGE,
+  CHARGER_STATUS,
 } from '../../../constants.js';
 
-export default class Striker extends Enemy {
+export default class Charger extends Enemy {
   constructor(x, y) {
-    super(x, y, STRIKER_HP, STRIKER_APPROACH_SPEED);
-    this.radius = STRIKER_RADIUS;
-    this.state = STRIKER_STATUS.APPROACH;
+    super(x, y, CHARGER_HP, CHARGER_APPROACH_SPEED);
+    this.radius = CHARGER_RADIUS;
+    this.state = CHARGER_STATUS.APPROACH;
     this.chargeTimer = 0;
-    this.dashDir = { x: 0, y: 0 };
-    this.dashSpeed = STRIKER_DASH_SPEED;
-    this.chargeRange = STRIKER_CHARGE_RANGE;
-    this.chargeTime = STRIKER_CHARGE_TIME;
+    this.chargeDir = { x: 0, y: 0 };
+    this.chargeSpeed = CHARGER_CHARGE_SPEED;
+    this.chargeRange = CHARGER_CHARGE_RANGE;
+    this.chargeTime = CHARGER_CHARGE_TIME;
   }
+
   update(dt, game) {
     if (this.dead) return;
     const px = game.player.x;
@@ -29,7 +30,7 @@ export default class Striker extends Enemy {
     const dy = py - this.y;
     const dist = Math.hypot(dx, dy) || 1;
 
-    if (this.state === STRIKER_STATUS.APPROACH) {
+    if (this.state === CHARGER_STATUS.APPROACH) {
       // move slowly toward player until in charge range
       const move = Math.min(
         this.speed * dt,
@@ -40,23 +41,23 @@ export default class Striker extends Enemy {
         this.y += (dy / dist) * move;
       }
       if (dist <= this.chargeRange) {
-        this.state = STRIKER_STATUS.CHARGING;
+        this.state = CHARGER_STATUS.FOCUSING;
         this.chargeTimer = this.chargeTime;
       }
-    } else if (this.state === STRIKER_STATUS.CHARGING) {
+    } else if (this.state === CHARGER_STATUS.FOCUSING) {
       this.chargeTimer -= dt;
       if (this.chargeTimer <= 0) {
-        // lock dash direction and go
+        // lock charge direction and go
         const nx = dx / dist;
         const ny = dy / dist;
-        this.dashDir.x = nx;
-        this.dashDir.y = ny;
-        this.state = STRIKER_STATUS.DASHING;
+        this.chargeDir.x = nx;
+        this.chargeDir.y = ny;
+        this.state = CHARGER_STATUS.CHARGING;
       }
-    } else if (this.state === STRIKER_STATUS.DASHING) {
-      // move fast along dashDir
-      this.x += this.dashDir.x * this.dashSpeed * dt;
-      this.y += this.dashDir.y * this.dashSpeed * dt;
+    } else if (this.state === CHARGER_STATUS.CHARGING) {
+      // move fast along chargeDir
+      this.x += this.chargeDir.x * this.chargeSpeed * dt;
+      this.y += this.chargeDir.y * this.chargeSpeed * dt;
       // check collision with player
       const newDist = Math.hypot(
         game.player.x - this.x,
@@ -65,7 +66,7 @@ export default class Striker extends Enemy {
       const minDist = this.radius + game.player.radius;
       if (newDist <= minDist + 0.01) {
         // deal explode damage and die
-        game.player.hp -= STRIKER_EXPLODE_DAMAGE;
+        game.player.hp -= CHARGER_EXPLODE_DAMAGE;
         if (game.player.hp <= 0) {
           game.player.hp = 0;
           game.running = false;
@@ -74,7 +75,7 @@ export default class Striker extends Enemy {
           game.spawnFloatingText(
             game.player.x,
             game.player.y - game.player.radius - 6,
-            `-${Math.round(STRIKER_EXPLODE_DAMAGE)}`,
+            `-${Math.round(CHARGER_EXPLODE_DAMAGE)}`,
             '#ff7b7b'
           );
         }
@@ -83,7 +84,7 @@ export default class Striker extends Enemy {
     }
   }
 
-  // draw the striker's shape; base `render` will handle HP bar and transforms
+  // draw the charger's shape; base `render` will handle HP bar and transforms
   drawShape(ctx) {
     // different color/shape (triangle)
     ctx.fillStyle = '#ffcc66';

@@ -1,5 +1,5 @@
 import Drone from '../entities/enemy/enemies/drone.js';
-import Striker from '../entities/enemy/enemies/striker.js';
+import Charger from '../entities/enemy/enemies/charger.js';
 import Tank from '../entities/enemy/enemies/tank.js';
 import { BASE_ENEMIES_SPAWNED, WAVE_SPAWN_INTERVAL } from '../constants.js';
 
@@ -25,12 +25,12 @@ export default class WaveManager {
     this.nextWaveTimer = 0;
   }
 
-  // start a custom wave with explicit counts (drones, strikers, tanks)
-  startCustomWave(drones = 0, strikers = 0, tanks = 0) {
+  // start a custom wave with explicit counts (drones, chargers, tanks)
+  startCustomWave(drones = 0, chargers = 0, tanks = 0) {
     this.waveIndex += 1;
     const q = [];
     for (let i = 0; i < drones; i++) q.push('drone');
-    for (let i = 0; i < strikers; i++) q.push('striker');
+    for (let i = 0; i < chargers; i++) q.push('charger');
     for (let i = 0; i < tanks; i++) q.push('tank');
     // shuffle
     for (let i = q.length - 1; i > 0; i--) {

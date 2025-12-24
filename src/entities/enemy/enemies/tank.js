@@ -12,7 +12,6 @@ export default class Tank extends Enemy {
     this.radius = TANK_RADIUS;
   }
 
-
   // Use base Enemy.update for movement and contact damage, but override contact DPS
   update(dt, game) {
     // reuse base movement toward center but override damage amount when touching

@@ -6,5 +6,4 @@ export default class Drone extends Enemy {
     super(x, y, DRONE_HP, DRONE_SPEED);
     this.radius = DRONE_RADIUS;
   }
-
 }
