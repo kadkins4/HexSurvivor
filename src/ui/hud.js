@@ -1,6 +1,7 @@
 import Drone from '../entities/enemy/enemies/drone.js';
 import Striker from '../entities/enemy/enemies/striker.js';
 import Tank from '../entities/enemy/enemies/tank.js';
+import { icons } from './icons.js';
 
 export default class Hud {
   constructor(root, game) {
@@ -192,6 +193,36 @@ export default class Hud {
       this.clearWaveBtn.addEventListener('click', () => {
         if (this.game.waveManager) this.game.waveManager.clearWave();
       });
+
+    // replace wave buttons text with compact icons (if available)
+    try {
+      if (this.startCustomBtn) {
+        this.startCustomBtn.innerHTML = '';
+        const ic = icons.play({ width: 18, height: 18 });
+        if (ic) this.startCustomBtn.appendChild(ic);
+        this.startCustomBtn.title = 'Start Wave';
+      }
+      if (this.restartWaveBtn) {
+        this.restartWaveBtn.innerHTML = '';
+        const ic = icons.restart({ width: 18, height: 18 });
+        if (ic) this.restartWaveBtn.appendChild(ic);
+        this.restartWaveBtn.title = 'Restart Wave';
+      }
+      if (this.nextWaveBtn) {
+        this.nextWaveBtn.innerHTML = '';
+        const ic = icons.next({ width: 18, height: 18 });
+        if (ic) this.nextWaveBtn.appendChild(ic);
+        this.nextWaveBtn.title = 'Next Wave';
+      }
+      if (this.clearWaveBtn) {
+        this.clearWaveBtn.innerHTML = '';
+        const ic = icons.clear({ width: 18, height: 18 });
+        if (ic) this.clearWaveBtn.appendChild(ic);
+        this.clearWaveBtn.title = 'Clear Wave';
+      }
+    } catch (e) {
+      // ignore icon injection errors; leave text buttons as-is
+    }
 
     const applyPlayerInputs = () => {
       const p = this.game.player;

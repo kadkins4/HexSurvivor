@@ -12,5 +12,8 @@
   "devDependencies": {
     "prettier": "^3.7.4",
     "vite": "^5.1.0"
+  },
+  "dependencies": {
+    "feather-icons": "^4.29.2"
   }
 }
