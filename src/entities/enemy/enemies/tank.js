@@ -12,24 +12,6 @@ export default class Tank extends Enemy {
     this.radius = TANK_RADIUS;
   }
 
-  static spawnAtEdge(width, height) {
-    const side = Math.floor(Math.random() * 4);
-    let x, y;
-    if (side === 0) {
-      x = -40;
-      y = Math.random() * height;
-    } else if (side === 1) {
-      x = width + 40;
-      y = Math.random() * height;
-    } else if (side === 2) {
-      x = Math.random() * width;
-      y = -40;
-    } else {
-      x = Math.random() * width;
-      y = height + 40;
-    }
-    return new Tank(x, y);
-  }
 
   // Use base Enemy.update for movement and contact damage, but override contact DPS
   update(dt, game) {

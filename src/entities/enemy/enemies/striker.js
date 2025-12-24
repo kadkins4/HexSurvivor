@@ -21,26 +21,6 @@ export default class Striker extends Enemy {
     this.chargeRange = STRIKER_CHARGE_RANGE;
     this.chargeTime = STRIKER_CHARGE_TIME;
   }
-
-  static spawnAtEdge(width, height) {
-    const side = Math.floor(Math.random() * 4);
-    let x, y;
-    if (side === 0) {
-      x = -30;
-      y = Math.random() * height;
-    } else if (side === 1) {
-      x = width + 30;
-      y = Math.random() * height;
-    } else if (side === 2) {
-      x = Math.random() * width;
-      y = -30;
-    } else {
-      x = Math.random() * width;
-      y = height + 30;
-    }
-    return new Striker(x, y);
-  }
-
   update(dt, game) {
     if (this.dead) return;
     const px = game.player.x;

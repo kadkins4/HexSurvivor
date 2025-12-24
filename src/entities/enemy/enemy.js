@@ -110,6 +110,27 @@ export default class Enemy {
     this.dead = true;
   }
 
+  // spawn at a random screen edge for any enemy subclass
+  // `margin` lets subclasses control how far off-screen they start (default 20)
+  static spawnAtEdge(width, height, margin = 20) {
+    const side = Math.floor(Math.random() * 4);
+    let x, y;
+    if (side === 0) {
+      x = -margin;
+      y = Math.random() * height;
+    } else if (side === 1) {
+      x = width + margin;
+      y = Math.random() * height;
+    } else if (side === 2) {
+      x = Math.random() * width;
+      y = -margin;
+    } else {
+      x = Math.random() * width;
+      y = height + margin;
+    }
+    return new this(x, y);
+  }
+
   // default shape drawer for enemies — subclasses may override this
   drawShape(ctx) {
     ctx.fillStyle = '#ff9a76';
