@@ -1,0 +1,73 @@
+import { PLAYER_BASE_DAMAGE, PLAYER_BASE_RANGE, PLAYER_BASE_FIRE_RATE, PLAYER_BASE_MAX_HP, PLAYER_BASE_RADIUS } from "../constants";
+
+export default class Player {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.radius = PLAYER_BASE_RADIUS;
+    this.maxHp = PLAYER_BASE_MAX_HP;
+    this.hp = this.maxHp;
+    this.damage = PLAYER_BASE_DAMAGE;
+    this.fireRate = PLAYER_BASE_FIRE_RATE; // shots per second
+    this.range = PLAYER_BASE_RANGE;
+    this.fireTimer = 0;
+  }
+
+  update(dt, game) {
+    // auto-fire at nearest enemy
+    this.fireTimer -= dt;
+    const target = this.findNearest(game.enemies);
+    if (target && this.inRange(target)) {
+      if (this.fireTimer <= 0) {
+        this.fireTimer = 1 / this.fireRate;
+        // spawn a small projectile that travels to the target
+        game.spawnProjectile(this.x, this.y, target, this.damage);
+      }
+    }
+  }
+
+  findNearest(enemies) {
+    if (!enemies || enemies.length === 0) return null;
+    let best = null;
+    let bestD = Infinity;
+    for (let e of enemies) {
+      const dx = e.x - this.x;
+      const dy = e.y - this.y;
+      const d = Math.hypot(dx, dy);
+      if (d < bestD) { bestD = d; best = e; }
+    }
+    return best;
+  }
+
+  inRange(target) { return Math.hypot(target.x - this.x, target.y - this.y) <= this.range; }
+
+  render(ctx) {
+    // draw range circle
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.beginPath();
+    ctx.arc(0, 0, this.range, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(72,210,255,0.03)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(72,210,255,0.12)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // draw hex
+    ctx.fillStyle = '#48d2ff';
+    ctx.strokeStyle = '#7ff5ff';
+    ctx.lineWidth = 2;
+    const r = this.radius;
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = (Math.PI / 3) * i - Math.PI / 6;
+      const px = Math.cos(a) * r;
+      const py = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+}

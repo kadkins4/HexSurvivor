@@ -1,0 +1,45 @@
+* { box-sizing: border-box; }
+.app-container,html,body { height: 100%; margin: 0; background: #0b0f14; color: #e6eef6; font-family: Inter, system-ui, sans-serif; }
+#app { height:100%; display:flex; gap:20px; align-items:flex-start; justify-content:center; padding:20px; box-sizing:border-box; }
+
+/* Sidebar */
+#sidebar { width:220px; display:flex; flex-direction:column; gap:12px; }
+#ui-root { color: #cfe7ff; }
+
+/* Play area centers the canvas */
+#play-area { flex:1; display:flex; align-items:center; justify-content:center; }
+canvas { background: linear-gradient(180deg, #071018 0%, #051018 100%); border-radius:8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-width:100%; height:auto; }
+.hud { background: rgba(255,255,255,0.02); padding:6px 10px; border-radius:6px; }
+.button { background: #0f2030; color:#cfe7ff; padding:8px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); cursor:pointer; }
+
+/* Restart button fixed on the far left center */
+.restart-btn {
+	position: fixed;
+	left: 12px;
+	top: 75px;
+	background: #122533;
+	color: #cfe7ff;
+	padding: 10px 12px;
+	border-radius: 6px;
+	border: 1px solid rgba(255,255,255,0.04);
+	cursor: pointer;
+	z-index: 1000;
+}
+
+.control-panel {
+	position: fixed;
+	left: 12px;
+	top: 120px;
+	background: rgba(10,18,24,0.9);
+	color: #cfe7ff;
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid rgba(255,255,255,0.04);
+	z-index: 1000;
+	width: 160px;
+	font-size: 13px;
+}
+.control-panel label { display:block; margin-top:6px; color:#9fd9ff; }
+.control-panel input[type="number"] { width:100%; margin-top:4px; padding:6px; border-radius:4px; border:1px solid rgba(255,255,255,0.04); background:#08131a; color:#cfe7ff; }
+.control-panel .spawn-btn { margin-top:8px; width:100%; padding:8px; background:#163241; border-radius:6px; border:1px solid rgba(255,255,255,0.04); color:#cfe7ff; cursor:pointer; }
+.control-panel .small { font-size:12px; color:#9fbfcf; }
