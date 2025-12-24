@@ -33,7 +33,9 @@ export default class Tank extends Enemy {
     const newD = Math.hypot(game.player.x - this.x, game.player.y - this.y);
     if (newD <= minDist + 0.001) {
       const dmg = TANK_CONTACT_DPS * dt;
-      game.player.hp -= dmg;
+      if (game.player && typeof game.player.takeDamage === 'function') {
+        game.player.takeDamage(dmg);
+      }
       if (game.player.hp <= 0) {
         game.player.hp = 0;
         game.running = false;

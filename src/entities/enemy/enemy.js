@@ -8,6 +8,7 @@ import {
   SHAKE_DURATION_CONTACT,
   PLAYER_HITFLASH_DURATION,
 } from '../../constants';
+import { drawCircle } from '../../utils/drawShapes';
 
 export default class Enemy {
   constructor(x, y, hp = ENEMY_BASE_HP, speed = ENEMY_BASE_SPEED) {
@@ -44,8 +45,9 @@ export default class Enemy {
     const newD = Math.hypot(game.player.x - this.x, game.player.y - this.y);
     if (newD <= minDist + 0.001) {
       const dmg = ENEMY_CONTACT_DPS * dt; // damage amount
-      game.player.hp -= dmg;
-      // visual feedback: explosion at contact, screen nudge and player flash
+      if (game.player && typeof game.player.takeDamage === 'function') {
+        game.player.takeDamage(dmg);
+      }
       if (typeof game.spawnExplosion === 'function') {
         game.spawnExplosion(
           (this.x + game.player.x) / 2,
@@ -55,9 +57,6 @@ export default class Enemy {
       }
       if (typeof game.startScreenShake === 'function') {
         game.startScreenShake(SHAKE_INTENSITY_CONTACT, SHAKE_DURATION_CONTACT);
-      }
-      if (game.player && typeof game.player.flashHit === 'function') {
-        game.player.flashHit(PLAYER_HITFLASH_DURATION);
       }
       if (game.player.hp <= 0) {
         game.player.hp = 0;
@@ -133,10 +132,7 @@ export default class Enemy {
 
   // default shape drawer for enemies — subclasses may override this
   drawShape(ctx) {
-    ctx.fillStyle = '#ff9a76';
-    ctx.beginPath();
-    ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-    ctx.fill();
+    drawCircle(ctx, 0, 0, this.radius, '#ff9a76');
   }
 
   render(ctx) {

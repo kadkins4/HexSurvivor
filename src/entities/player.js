@@ -62,6 +62,12 @@ export default class Player {
     return Math.hypot(target.x - this.x, target.y - this.y) <= this.range;
   }
 
+  takeDamage(amount) {
+    this.hp -= amount;
+    if (this.hp < 0) this.hp = 0;
+    this.flashHit();
+  }
+
   render(ctx) {
     // draw range circle
     ctx.save();

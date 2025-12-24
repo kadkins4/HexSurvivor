@@ -66,7 +66,9 @@ export default class Charger extends Enemy {
       const minDist = this.radius + game.player.radius;
       if (newDist <= minDist + 0.01) {
         // deal explode damage and die
-        game.player.hp -= CHARGER_EXPLODE_DAMAGE;
+        if (game.player && typeof game.player.takeDamage === 'function') {
+          game.player.takeDamage(CHARGER_EXPLODE_DAMAGE);
+        }
         if (game.player.hp <= 0) {
           game.player.hp = 0;
           game.running = false;
