@@ -49,6 +49,11 @@ export const STRIKER_CHARGE_RANGE = 160; // start charging when within this
 export const STRIKER_CHARGE_TIME = 0.6; // seconds to charge
 export const STRIKER_RADIUS = 8;
 export const STRIKER_EXPLODE_DAMAGE = 24;
+export const STRIKER_STATUS = {
+  APPROACH: 'approach',
+  CHARGING: 'charging',
+  DASHING: 'dashing',
+};
 
 // TANK
 export const TANK_HP = 60;

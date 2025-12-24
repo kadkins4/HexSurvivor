@@ -7,13 +7,14 @@ import {
   STRIKER_CHARGE_TIME,
   STRIKER_RADIUS,
   STRIKER_EXPLODE_DAMAGE,
+  STRIKER_STATUS,
 } from '../../../constants.js';
 
 export default class Striker extends Enemy {
   constructor(x, y) {
     super(x, y, STRIKER_HP, STRIKER_APPROACH_SPEED);
     this.radius = STRIKER_RADIUS;
-    this.state = 'approach'; // 'approach' | 'charging' | 'dashing'
+    this.state = STRIKER_STATUS.APPROACH;
     this.chargeTimer = 0;
     this.dashDir = { x: 0, y: 0 };
     this.dashSpeed = STRIKER_DASH_SPEED;
@@ -48,7 +49,7 @@ export default class Striker extends Enemy {
     const dy = py - this.y;
     const dist = Math.hypot(dx, dy) || 1;
 
-    if (this.state === 'approach') {
+    if (this.state === STRIKER_STATUS.APPROACH) {
       // move slowly toward player until in charge range
       const move = Math.min(
         this.speed * dt,
@@ -59,10 +60,10 @@ export default class Striker extends Enemy {
         this.y += (dy / dist) * move;
       }
       if (dist <= this.chargeRange) {
-        this.state = 'charging';
+        this.state = STRIKER_STATUS.CHARGING;
         this.chargeTimer = this.chargeTime;
       }
-    } else if (this.state === 'charging') {
+    } else if (this.state === STRIKER_STATUS.CHARGING) {
       this.chargeTimer -= dt;
       if (this.chargeTimer <= 0) {
         // lock dash direction and go
@@ -70,9 +71,9 @@ export default class Striker extends Enemy {
         const ny = dy / dist;
         this.dashDir.x = nx;
         this.dashDir.y = ny;
-        this.state = 'dashing';
+        this.state = STRIKER_STATUS.DASHING;
       }
-    } else if (this.state === 'dashing') {
+    } else if (this.state === STRIKER_STATUS.DASHING) {
       // move fast along dashDir
       this.x += this.dashDir.x * this.dashSpeed * dt;
       this.y += this.dashDir.y * this.dashSpeed * dt;
@@ -102,9 +103,8 @@ export default class Striker extends Enemy {
     }
   }
 
-  render(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
+  // draw the striker's shape; base `render` will handle HP bar and transforms
+  drawShape(ctx) {
     // different color/shape (triangle)
     ctx.fillStyle = '#ffcc66';
     ctx.beginPath();
@@ -113,6 +113,5 @@ export default class Striker extends Enemy {
     ctx.lineTo(-this.radius, this.radius);
     ctx.closePath();
     ctx.fill();
-    ctx.restore();
   }
 }

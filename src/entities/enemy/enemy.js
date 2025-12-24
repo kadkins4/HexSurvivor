@@ -110,19 +110,27 @@ export default class Enemy {
     this.dead = true;
   }
 
-  render(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
+  // default shape drawer for enemies — subclasses may override this
+  drawShape(ctx) {
     ctx.fillStyle = '#ff9a76';
     ctx.beginPath();
     ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
     ctx.fill();
-    // hp bar
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(-this.radius, -this.radius - 8, this.radius * 2, 4);
-    ctx.fillStyle = '#76ffb6';
-    const w = Math.max(0, (this.hp / this.maxHp) * this.radius * 2);
-    ctx.fillRect(-this.radius, -this.radius - 8, w, 4);
+  }
+
+  render(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    // draw the enemy-specific shape (subclasses can override `drawShape`)
+    this.drawShape(ctx);
+    // hp bar - drawn for all enemies by base class when damaged
+    if (this.hp < this.maxHp) {
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(-this.radius, -this.radius - 8, this.radius * 2, 4);
+      ctx.fillStyle = '#76ffb6';
+      const w = Math.max(0, (this.hp / this.maxHp) * this.radius * 2);
+      ctx.fillRect(-this.radius, -this.radius - 8, w, 4);
+    }
     ctx.restore();
   }
 }
