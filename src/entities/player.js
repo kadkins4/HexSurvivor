@@ -4,6 +4,7 @@ import {
   PLAYER_BASE_FIRE_RATE,
   PLAYER_BASE_MAX_HP,
   PLAYER_BASE_RADIUS,
+  PLAYER_HITFLASH_DURATION,
 } from '../constants';
 
 export default class Player {
@@ -17,11 +18,14 @@ export default class Player {
     this.fireRate = PLAYER_BASE_FIRE_RATE; // shots per second
     this.range = PLAYER_BASE_RANGE;
     this.fireTimer = 0;
+    this.hitFlash = 0; // seconds remaining for hit flash
   }
 
   update(dt, game) {
     // auto-fire at nearest enemy
     this.fireTimer -= dt;
+    // decay hit flash
+    if (this.hitFlash > 0) this.hitFlash = Math.max(0, this.hitFlash - dt);
     const target = this.findNearest(game.enemies);
     if (target && this.inRange(target)) {
       if (this.fireTimer <= 0) {
@@ -30,6 +34,12 @@ export default class Player {
         game.spawnProjectile(this.x, this.y, target, this.damage);
       }
     }
+  }
+
+  flashHit(duration = null) {
+    // use configured default when not provided
+    const d = duration || PLAYER_HITFLASH_DURATION;
+    this.hitFlash = d;
   }
 
   findNearest(enemies) {
@@ -80,6 +90,22 @@ export default class Player {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+    // overlay red flash if recently hit
+    if (this.hitFlash > 0) {
+      ctx.globalAlpha = Math.min(0.6, this.hitFlash * 3);
+      ctx.fillStyle = '#ff6b6b';
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = (Math.PI / 3) * i - Math.PI / 6;
+        const px = Math.cos(a) * r;
+        const py = Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
     ctx.restore();
   }
 }

@@ -1,13 +1,14 @@
 import Drone from '../entities/enemy/enemies/drone.js';
 import Striker from '../entities/enemy/enemies/striker.js';
 import Tank from '../entities/enemy/enemies/tank.js';
+import { BASE_ENEMIES_SPAWNED, WAVE_SPAWN_INTERVAL } from '../constants.js';
 
 export default class WaveManager {
   constructor(game) {
     this.game = game;
     this.waveIndex = 0;
     this.spawnQueue = [];
-    this.spawnInterval = 0.45;
+    this.spawnInterval = WAVE_SPAWN_INTERVAL;
     this.spawnTimer = 0;
     this.spawning = false;
     this.waitingForClear = false;
@@ -66,7 +67,7 @@ export default class WaveManager {
 
   buildSpawnQueue() {
     // simple progression: base drones, add strikers after wave 3, add occasional tank
-    const base = 6 + this.waveIndex * 2;
+    const base = BASE_ENEMIES_SPAWNED + this.waveIndex * 2;
     const strikers = Math.max(0, Math.floor((this.waveIndex - 2) / 2));
     const tanks = this.waveIndex % 5 === 0 ? 1 : 0;
     const drones = Math.max(0, base - strikers * 2 - tanks * 3);

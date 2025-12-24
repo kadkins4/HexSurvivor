@@ -3,6 +3,10 @@ import {
   ENEMY_BASE_SPEED,
   ENEMY_BASE_RADIUS,
   ENEMY_CONTACT_DPS,
+  EXPLOSION_COLOR_CONTACT,
+  SHAKE_INTENSITY_CONTACT,
+  SHAKE_DURATION_CONTACT,
+  PLAYER_HITFLASH_DURATION,
 } from '../../constants';
 
 export default class Enemy {
@@ -41,6 +45,20 @@ export default class Enemy {
     if (newD <= minDist + 0.001) {
       const dmg = ENEMY_CONTACT_DPS * dt; // damage amount
       game.player.hp -= dmg;
+      // visual feedback: explosion at contact, screen nudge and player flash
+      if (typeof game.spawnExplosion === 'function') {
+        game.spawnExplosion(
+          (this.x + game.player.x) / 2,
+          (this.y + game.player.y) / 2,
+          { radius: 8, life: 0.18, color: EXPLOSION_COLOR_CONTACT }
+        );
+      }
+      if (typeof game.startScreenShake === 'function') {
+        game.startScreenShake(SHAKE_INTENSITY_CONTACT, SHAKE_DURATION_CONTACT);
+      }
+      if (game.player && typeof game.player.flashHit === 'function') {
+        game.player.flashHit(PLAYER_HITFLASH_DURATION);
+      }
       if (game.player.hp <= 0) {
         game.player.hp = 0;
         game.running = false;
@@ -76,6 +94,14 @@ export default class Enemy {
         `-${shown}`,
         '#ffe47a'
       );
+      // explosion feedback when enemy is hit
+      if (typeof game.spawnExplosion === 'function') {
+        game.spawnExplosion(this.x, this.y, {
+          radius: Math.max(6, amount * 0.6),
+          life: 0.28,
+          color: EXPLOSION_COLOR_CONTACT,
+        });
+      }
     }
     if (this.hp <= 0) this.die();
   }

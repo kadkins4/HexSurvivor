@@ -1,5 +1,7 @@
+import { FLOATING_TEXT_LIFETIME } from '../constants';
+
 export default class FloatingText {
-  constructor(x, y, text, color = '#fff', lifetime = 0.9) {
+  constructor(x, y, text, color = '#fff', lifetime = FLOATING_TEXT_LIFETIME) {
     this.x = x;
     this.y = y;
     this.text = String(text);

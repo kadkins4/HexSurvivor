@@ -5,8 +5,13 @@ import Striker from './entities/enemy/enemies/striker.js';
 import Tank from './entities/enemy/enemies/tank.js';
 import Projectile from './entities/projectile.js';
 import FloatingText from './ui/floatingText.js';
+import Explosion from './ui/explosion.js';
 import resolveCircleSeparation from './systems/collision.js';
 import WaveManager from './systems/waveManager.js';
+import {
+  SHAKE_INTENSITY_CONTACT,
+  SHAKE_DURATION_CONTACT,
+} from './constants.js';
 
 const Game = {
   canvas: null,
@@ -17,6 +22,7 @@ const Game = {
   enemies: [],
   projectiles: [],
   floatingTexts: [],
+  explosions: [],
   hud: null,
   lastTime: 0,
   delta: 0,
@@ -33,6 +39,8 @@ const Game = {
     // spawn a few enemies for demo (wave manager will handle waves)
     this.waveManager = new WaveManager(this);
     this.waveManager.startNextWave();
+
+    this.explosions = [];
 
     this.projectiles = [];
     this.floatingTexts = [];
@@ -62,6 +70,16 @@ const Game = {
     this.updateProjectiles(dt);
     this.updateFloatingTexts(dt);
 
+    // update explosions
+    for (let ex of this.explosions) ex.update(dt);
+    this.explosions = this.explosions.filter((ex) => !ex.dead);
+
+    // update screen shake timer
+    if (this._shake) {
+      this._shake.timer -= dt;
+      if (this._shake.timer <= 0) this._shake = null;
+    }
+
     this.enemies = this.enemies.filter((e) => !e.dead);
   },
 
@@ -86,15 +104,41 @@ const Game = {
     for (let y = 0; y < this.height; y += 40) ctx.fillRect(0, y, this.width, 1);
     ctx.restore();
 
+    // apply screen shake offset while rendering game objects
+    ctx.save();
+    if (this._shake) {
+      const s = this._shake;
+      const intensity = s.intensity || 4;
+      const progress = Math.max(0, s.timer / s.duration);
+      const mag = intensity * progress;
+      const ox = (Math.random() * 2 - 1) * mag;
+      const oy = (Math.random() * 2 - 1) * mag;
+      ctx.translate(ox, oy);
+    }
+
     for (let e of this.enemies) e.render(ctx);
     for (let p of this.projectiles) p.render(ctx);
     this.player.render(ctx);
+    // explosions underneath floating text
+    for (let ex of this.explosions) ex.render(ctx);
     // floating texts on top
     for (let f of this.floatingTexts) f.render(ctx);
+    ctx.restore();
   },
 
   spawnProjectile(x, y, target, damage = 10) {
     this.projectiles.push(new Projectile(x, y, target, damage));
+  },
+
+  spawnExplosion(x, y, opts = {}) {
+    this.explosions.push(new Explosion(x, y, opts));
+  },
+
+  startScreenShake(
+    intensity = SHAKE_INTENSITY_CONTACT,
+    duration = SHAKE_DURATION_CONTACT
+  ) {
+    this._shake = { intensity, timer: duration, duration };
   },
 
   // reset game state to start a fresh run

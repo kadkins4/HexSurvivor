@@ -1,4 +1,4 @@
-import { PROJECTILE_SPEED, PROJECTILE_RADIUS } from '../constants';
+import { PROJECTILE_SPEED, PROJECTILE_RADIUS, EXPLOSION_LIFE, EXPLOSION_RADIUS, EXPLOSION_COLOR_HIT } from '../constants';
 
 export default class Projectile {
   constructor(x, y, target, damage = 10, speed = PROJECTILE_SPEED) {
@@ -30,6 +30,15 @@ export default class Projectile {
     ) {
       if (typeof this.target.takeDamage === 'function')
         this.target.takeDamage(this.damage, game);
+
+      if (typeof game.spawnExplosion === 'function') {
+        game.spawnExplosion(this.x, this.y, {
+          radius: EXPLOSION_RADIUS,
+          life: EXPLOSION_LIFE,
+          color: EXPLOSION_COLOR_HIT,
+        });
+      }
+
       this.dead = true;
     }
   }
