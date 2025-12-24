@@ -11,6 +11,7 @@ import WaveManager from './systems/waveManager.js';
 import {
   SHAKE_INTENSITY_CONTACT,
   SHAKE_DURATION_CONTACT,
+  FENCE_AREA,
 } from './constants.js';
 
 const Game = {
@@ -85,7 +86,29 @@ const Game = {
 
   updateProjectiles(dt) {
     for (let p of this.projectiles) p.update(dt, this);
+    // mark projectiles outside kill area as dead before filtering
+    this.applyFenceArea();
     this.projectiles = this.projectiles.filter((p) => !p.dead);
+  },
+
+  // mark entities that move outside the allowed arena + margin as dead
+  applyFenceArea() {
+    const m = FENCE_AREA;
+    const w = this.width;
+    const h = this.height;
+    const out = (ent) => {
+      if (!ent || typeof ent.x !== 'number' || typeof ent.y !== 'number')
+        return false;
+      return ent.x < -m || ent.x > w + m || ent.y < -m || ent.y > h + m;
+    };
+    const markArr = (arr) => {
+      if (!arr) return;
+      for (let e of arr) if (!e.dead && out(e)) e.dead = true;
+    };
+    markArr(this.enemies);
+    markArr(this.projectiles);
+    markArr(this.explosions);
+    markArr(this.floatingTexts);
   },
 
   updateFloatingTexts(dt) {

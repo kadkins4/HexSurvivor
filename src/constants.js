@@ -8,6 +8,7 @@ export const PLAYER_BASE_RANGE = 250;
 // PROJECTILE
 export const PROJECTILE_SPEED = 400;
 export const PROJECTILE_RADIUS = 4;
+export const PROJECTILE_DAMAGE = 10;
 
 // VISUALS
 export const EXPLOSION_LIFE = 0.28;
@@ -54,3 +55,6 @@ export const TANK_HP = 60;
 export const TANK_SPEED = 20;
 export const TANK_RADIUS = 18;
 export const TANK_CONTACT_DPS = 18;
+
+// margin outside the visible arena where entities are killed
+export const FENCE_AREA = 40;
