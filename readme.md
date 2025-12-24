@@ -11,6 +11,7 @@
 ## 1. Theme & Presentation
 
 ### Theme
+
 **Neon Training Simulator: Hex Core Defense**
 
 - Player = **Hexagon** (“Core”)
@@ -20,6 +21,7 @@
 - Audio optional for v0
 
 ### Visual constraints (to keep it fast)
+
 - Use a **3–5 color** palette
 - No sprites required (primitives/shapes only)
 - Minimal UI: wave, HP, scrap, shop overlay
@@ -53,11 +55,13 @@
 ## 4. Player Mechanics (v0)
 
 ### Player Unit: “Core” (stationary for simplicity)
+
 - Position locked at center (no movement)
 - Auto-target: **nearest enemy**
 - Auto-fire: hitscan or projectile (choose simplest in your engine)
 
 ### Player Stats
+
 - Max HP
 - Damage
 - Fire Rate (shots/sec)
@@ -65,7 +69,9 @@
 - Optional (v0 or later): Regen, Crit, Multishot
 
 ### Optional 1-button ability (nice stretch)
+
 **Pulse (Spacebar / Click)**
+
 - Cooldown: ~10s
 - AOE damage + brief knockback around the player
 - Adds engagement without complicating movement/aiming
@@ -75,21 +81,25 @@
 ## 5. Enemy Design (v0-friendly)
 
 ### Enemy Types
+
 Start with **2**; add the 3rd if time permits.
 
-1. **Drone (Circle)** — baseline  
+1. **Drone (Circle)** — baseline
    - Low HP, medium speed
-2. **Striker (Triangle)** — fast  
+2. **Striker (Triangle)** — fast
    - Low HP, high speed
-3. **Tank (Square)** — slow bruiser *(optional)*  
+3. **Tank (Square)** — slow bruiser _(optional)_
    - High HP, low speed
 
 ### Enemy Behavior
+
 - Move directly toward the center
 - On contact: deal damage over time (or chunk damage + despawn)
 
 ### Scaling
+
 Per wave:
+
 - Increase spawn count
 - Increase enemy HP slightly
 - Increase speed slightly (cap it to keep fairness/readability)
@@ -99,28 +109,32 @@ Per wave:
 ## 6. Waves & Spawning
 
 ### Wave Structure (simple)
+
 - Each wave spawns **N enemies** over time
 - Spawn points are random along the arena boundary
 - Wave ends when spawned enemies are all dead
 
 ### Example Progression
-- Wave 1: 10 drones  
-- Wave 2: 14 drones  
-- Wave 3: 12 drones + 6 strikers  
-- Wave 4: 20 mixed  
+
+- Wave 1: 10 drones
+- Wave 2: 14 drones
+- Wave 3: 12 drones + 6 strikers
+- Wave 4: 20 mixed
 - Wave 5+: gradual ramp
 
-*(Ultra-simple option: just increase count and HP; introduce striker on wave 3.)*
+_(Ultra-simple option: just increase count and HP; introduce striker on wave 3.)_
 
 ---
 
 ## 7. Economy & Upgrades
 
 ### Currency: Scrap
+
 - +Scrap per kill (e.g., **+1** baseline)
 - +Wave completion bonus (e.g., **5 + waveIndex**)
 
 ### Shop Flow (between waves)
+
 - Pause action; show shop overlay
 - Offer **3 upgrade cards** (random from pool)
 - Each upgrade has a cost (flat or scaling)
@@ -129,29 +143,35 @@ Per wave:
 **5-hour recommendation:** Allow the player to buy **as many upgrades as they can afford** (simpler than “pick 1”).
 
 ### Upgrade Pool (v0 set)
+
 Keep upgrades **numeric and stackable**.
 
 #### Offense
+
 - **+Damage** (e.g., +2)
 - **+Fire Rate** (e.g., +10%)
 - **+Range** (e.g., +10%)
-- **Multishot chance** *(optional)*
-- **Pierce** (shots go through 1 enemy) *(optional)*
+- **Multishot chance** _(optional)_
+- **Pierce** (shots go through 1 enemy) _(optional)_
 
 #### Defense
+
 - **+Max HP** (e.g., +10)
 - **+Regen** (e.g., +0.2 HP/sec)
 - **Armor** (reduce damage by 1)
 
 #### Control
+
 - **Slow Aura** (enemies in range -10% speed)
 - **Knockback on hit** (small)
 
 #### Pulse Upgrades (if Pulse exists)
+
 - **Pulse damage** +10
 - **Pulse cooldown** -10%
 
 ### Cost Scaling (easy)
+
 - Base cost: **10–20 Scrap**
 - Each purchase increases future costs: **+5** (or **+10%**) per buy
 
@@ -160,18 +180,21 @@ Keep upgrades **numeric and stackable**.
 ## 8. UI / UX (minimal but complete)
 
 ### In-Run HUD
+
 - HP bar (top-left)
 - Scrap count
 - Wave number
 - Optional: enemies remaining
 
 ### Shop Screen
+
 - “Wave Complete” title
 - 3 upgrade buttons: **name**, **effect**, **cost**
 - “Start Next Wave” button
 - Optional stretch: “Reroll” (costs Scrap)
 
 ### Death Screen
+
 - Wave reached
 - Total kills
 - Restart button
@@ -179,18 +202,20 @@ Keep upgrades **numeric and stackable**.
 ---
 
 ## 9. Audio (optional in v0)
+
 - Shoot “tick”
 - Hit “pop”
 - Upgrade “chime”
 - Death “buzz”
 
-*(Skip if time is tight; add later.)*
+_(Skip if time is tight; add later.)_
 
 ---
 
 ## 10. Technical Plan (Engine-Agnostic)
 
 ### Minimum Systems
+
 1. Entity system: player + enemies (position, HP, speed)
 2. Combat: auto-target selection, firing timer, damage application
 3. Spawner: spawn schedule per wave
@@ -199,6 +224,7 @@ Keep upgrades **numeric and stackable**.
 6. UI: HUD + Shop overlay + Game Over
 
 ### Simple Data Structures
+
 - `PlayerStats` (base + modifiers)
 - `Upgrade` objects: `{ id, name, desc, cost, apply(stats) }`
 - Wave generation function based on wave index (avoid large authored datasets)
@@ -210,6 +236,7 @@ Implementation note (v0): Use Vanilla HTML5 Canvas + Vite (ES modules) for a min
 ## 11. 5-Hour Implementation Timeline (v0)
 
 ### Hour 0–1: “Playable in 60”
+
 - Arena + player at center (hex)
 - Enemy entity (circle) moves toward center
 - Player auto-attacks nearest enemy
@@ -219,6 +246,7 @@ Implementation note (v0): Use Vanilla HTML5 Canvas + Vite (ES modules) for a min
 **Milestone:** you can die and you can kill enemies.
 
 ### Hour 1–2: Waves + Spawning
+
 - Wave manager spawns N enemies from edges over time
 - End wave when all spawned enemies are dead
 - Basic scaling (count + HP)
@@ -226,6 +254,7 @@ Implementation note (v0): Use Vanilla HTML5 Canvas + Vite (ES modules) for a min
 **Milestone:** waves progress and get harder.
 
 ### Hour 2–3: Scrap + Shop
+
 - Scrap per kill + wave completion bonus
 - Shop overlay between waves
 - Buy upgrades that modify player stats (damage/fire rate/HP)
@@ -234,6 +263,7 @@ Implementation note (v0): Use Vanilla HTML5 Canvas + Vite (ES modules) for a min
 **Milestone:** full loop exists (play → upgrade → play).
 
 ### Hour 3–4: 2nd Enemy Type + Polish
+
 - Add striker (triangle): faster, low HP
 - Hit feedback (flash/scale)
 - HUD clarity and tuning
@@ -241,7 +271,9 @@ Implementation note (v0): Use Vanilla HTML5 Canvas + Vite (ES modules) for a min
 **Milestone:** it feels like a “game,” not a prototype.
 
 ### Hour 4–5: Balance + “One Nice Thing”
+
 Pick **ONE**:
+
 - Pulse ability + cooldown
 - Reroll shop option
 - Slow aura upgrade

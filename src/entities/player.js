@@ -1,4 +1,10 @@
-import { PLAYER_BASE_DAMAGE, PLAYER_BASE_RANGE, PLAYER_BASE_FIRE_RATE, PLAYER_BASE_MAX_HP, PLAYER_BASE_RADIUS } from "../constants";
+import {
+  PLAYER_BASE_DAMAGE,
+  PLAYER_BASE_RANGE,
+  PLAYER_BASE_FIRE_RATE,
+  PLAYER_BASE_MAX_HP,
+  PLAYER_BASE_RADIUS,
+} from '../constants';
 
 export default class Player {
   constructor(x, y) {
@@ -34,12 +40,17 @@ export default class Player {
       const dx = e.x - this.x;
       const dy = e.y - this.y;
       const d = Math.hypot(dx, dy);
-      if (d < bestD) { bestD = d; best = e; }
+      if (d < bestD) {
+        bestD = d;
+        best = e;
+      }
     }
     return best;
   }
 
-  inRange(target) { return Math.hypot(target.x - this.x, target.y - this.y) <= this.range; }
+  inRange(target) {
+    return Math.hypot(target.x - this.x, target.y - this.y) <= this.range;
+  }
 
   render(ctx) {
     // draw range circle
@@ -63,7 +74,8 @@ export default class Player {
       const a = (Math.PI / 3) * i - Math.PI / 6;
       const px = Math.cos(a) * r;
       const py = Math.sin(a) * r;
-      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
     }
     ctx.closePath();
     ctx.fill();

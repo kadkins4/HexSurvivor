@@ -1,6 +1,7 @@
 export default class FloatingText {
   constructor(x, y, text, color = '#fff', lifetime = 0.9) {
-    this.x = x; this.y = y;
+    this.x = x;
+    this.y = y;
     this.text = String(text);
     this.color = color;
     this.life = lifetime;
@@ -12,7 +13,10 @@ export default class FloatingText {
 
   update(dt) {
     this.life -= dt;
-    if (this.life <= 0) { this.dead = true; return; }
+    if (this.life <= 0) {
+      this.dead = true;
+      return;
+    }
     this.x += this.vx * dt;
     this.y += this.vy * dt;
   }

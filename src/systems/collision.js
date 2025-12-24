@@ -14,14 +14,17 @@ export default function resolveCircleSeparation(entities, jitter = 0.5) {
       if (distance === 0) {
         // apply a tiny jitter so we have a valid normal
         const n = jitter;
-        entA.x -= n; entA.y -= n; entB.x += n; entB.y += n;
+        entA.x -= n;
+        entA.y -= n;
+        entB.x += n;
+        entB.y += n;
         distance = Math.hypot(entB.x - entA.x, entB.y - entA.y);
       }
 
       const overlap = minSeparation - distance;
       if (overlap > 0) {
-        const nx = (dx / distance) || 0;
-        const ny = (dy / distance) || 0;
+        const nx = dx / distance || 0;
+        const ny = dy / distance || 0;
         const push = overlap / 2;
         entA.x -= nx * push;
         entA.y -= ny * push;
