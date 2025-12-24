@@ -1,4 +1,10 @@
-import { PROJECTILE_SPEED, PROJECTILE_RADIUS, EXPLOSION_LIFE, EXPLOSION_RADIUS, EXPLOSION_COLOR_HIT } from '../constants';
+import {
+  PROJECTILE_SPEED,
+  PROJECTILE_RADIUS,
+  EXPLOSION_LIFE,
+  EXPLOSION_RADIUS,
+  EXPLOSION_COLOR_HIT,
+} from '../constants';
 
 export default class Projectile {
   constructor(x, y, target, damage = 10, speed = PROJECTILE_SPEED) {

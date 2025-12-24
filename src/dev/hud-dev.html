@@ -1,0 +1,56 @@
+<div style="height: 70vh; overflow-y: auto">
+  <div style="margin-bottom: 10px">
+    <summary class="large">Dev Tools:</summary>
+    <button id="restart-btn" class="spawn-btn">Restart</button>
+  </div>
+
+  <summary class="small">Player Controls</summary>
+  <label>Max HP<input id="ctl-maxhp" type="number" step="1" /></label>
+  <label>Damage<input id="ctl-dmg" type="number" step="1" /></label>
+  <label>Fire Rate<input id="ctl-fr" type="number" step="0.1" /></label>
+  <label>Range<input id="ctl-range" type="number" step="1" /></label>
+  <label><input id="invincible" type="checkbox" /> Invincible</label>
+
+  <hr />
+
+  <summary class="small">Enemy Spawner</summary>
+  <div style="display: flex; gap: 6px; margin-top: 6px">
+    <button id="spawn-drone" class="spawn-btn">Drone</button>
+    <button id="spawn-striker" class="spawn-btn">Striker</button>
+    <button id="spawn-tank" class="spawn-btn">Tank</button>
+  </div>
+
+  <label
+    >Drone<input id="count-drone" type="number" step="1" value="3"
+  /></label>
+  <label
+    >Striker<input id="count-striker" type="number" step="1" value="2"
+  /></label>
+  <label>Tank<input id="count-tank" type="number" step="1" value="1" /></label>
+  <button id="spawn-multi" class="spawn-btn">Spawn</button>
+
+  <hr />
+
+  <summary class="small">Wave</summary>
+  <div style="margin-top: 6px">
+    <label
+      >Drones<input id="custom-drones" type="number" step="1" value="0"
+    /></label>
+    <label
+      >Strikers<input id="custom-strikers" type="number" step="1" value="0"
+    /></label>
+    <label
+      >Tanks<input id="custom-tanks" type="number" step="1" value="0"
+    /></label>
+    <button
+      id="start-custom-wave"
+      class="spawn-btn"
+      title="Start Wave"
+    ></button>
+  </div>
+  <div style="display: flex; gap: 6px">
+    <button id="restart-wave" class="spawn-btn" title="Restart Wave"></button>
+    <button id="next-wave" class="spawn-btn" title="Next Wave"></button>
+    <button id="clear-wave" class="spawn-btn" title="Clear Wave"></button>
+  </div>
+</div>

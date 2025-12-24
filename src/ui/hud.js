@@ -9,64 +9,17 @@ export default class Hud {
     this.root = root;
     this.el = document.createElement('div');
     this.el.className = 'hud';
-    this.el.style = 'margin-left:20px';
     this.root.appendChild(this.el);
     this._tick = this._tick.bind(this);
 
     // control panel (adjust player stats + spawn enemies)
     this.panel = document.createElement('div');
     this.panel.className = 'control-panel';
+    this.panel.style =
+      'height: 70vh; overflow-y: auto; width: 220px; margin-left: 8px';
 
     // load the full HUD (controls + dev tools) from external file for easier editing
-    this.panel.innerHTML = '<div class="loading">Loading...</div>';
-    const devPath = '/src/ui/hud-dev.html';
-    const fallback = `
-      <details open>
-        <summary class="small">Player Controls</summary>
-        <label>Max HP<input id="ctl-maxhp" type="number" step="1"></label>
-        <label>Damage<input id="ctl-dmg" type="number" step="1"></label>
-        <label>Fire Rate<input id="ctl-fr" type="number" step="0.1"></label>
-        <label>Range<input id="ctl-range" type="number" step="1"></label>
-      </details>
-
-      <details>
-        <summary class="small">Enemy Spawner</summary>
-        <div style="display:flex;gap:6px;margin-top:6px;">
-          <button id="spawn-drone" class="spawn-btn">Spawn Drone</button>
-          <button id="spawn-striker" class="spawn-btn">Spawn Striker</button>
-          <button id="spawn-tank" class="spawn-btn">Spawn Tank</button>
-        </div>
-        <details>
-        <summary class="small" style="margin-top:8px">Quick Spawn</summary>
-        <label>Drone x<input id="count-drone" type="number" step="1" value="3"></label>
-        <label>Striker x<input id="count-striker" type="number" step="1" value="2"></label>
-        <label>Tank x<input id="count-tank" type="number" step="1" value="1"></label>
-        <button id="spawn-multi" class="spawn-btn">Spawn Multiple</button>
-        </details>
-      </details>
-
-      <details>
-        <summary class="small">Wave Controls</summary>
-        <div style="margin-top:6px;">
-          <label>Custom - Drones<input id="custom-drones" type="number" step="1" value="5"></label>
-          <label>Custom - Strikers<input id="custom-strikers" type="number" step="1" value="2"></label>
-          <label>Custom - Tanks<input id="custom-tanks" type="number" step="1" value="0"></label>
-          <button id="start-custom-wave" class="spawn-btn">Start Custom Wave</button>
-        </div>
-        <div style="display:flex;gap:6px;margin-top:8px;">
-          <button id="restart-wave" class="spawn-btn">Restart Wave</button>
-          <button id="next-wave" class="spawn-btn">Next Wave</button>
-          <button id="clear-wave" class="spawn-btn">Clear Wave</button>
-        </div>
-      </details>
-
-      <details>
-        <summary class="small">DEV TOOLS</summary>
-        <div style="margin-top:6px;display:flex;flex-direction:column;gap:6px;">
-          <button id="restart-btn" class="spawn-btn">Restart</button>
-        </div>
-      </details>
-    `;
+    const devPath = '/src/dev/hud-dev.html';
 
     fetch(devPath)
       .then((res) => {
@@ -77,10 +30,7 @@ export default class Hud {
         this.panel.innerHTML = html;
         this._wirePanel();
       })
-      .catch(() => {
-        this.panel.innerHTML = fallback;
-        this._wirePanel();
-      });
+      .catch((e) => console.error('error loading dev HUD file: ', e));
 
     // append to UI root (sidebar) if available, else body
     const mount = this.root || document.body;
@@ -185,34 +135,25 @@ export default class Hud {
         if (this.game.waveManager) this.game.waveManager.clearWave();
       });
 
-    // replace wave buttons text with compact icons (if available)
     try {
       if (this.startCustomBtn) {
-        this.startCustomBtn.innerHTML = '';
         const ic = icons.play({ width: 18, height: 18 });
         if (ic) this.startCustomBtn.appendChild(ic);
-        this.startCustomBtn.title = 'Start Wave';
       }
       if (this.restartWaveBtn) {
-        this.restartWaveBtn.innerHTML = '';
         const ic = icons.restart({ width: 18, height: 18 });
         if (ic) this.restartWaveBtn.appendChild(ic);
-        this.restartWaveBtn.title = 'Restart Wave';
       }
       if (this.nextWaveBtn) {
-        this.nextWaveBtn.innerHTML = '';
         const ic = icons.next({ width: 18, height: 18 });
         if (ic) this.nextWaveBtn.appendChild(ic);
-        this.nextWaveBtn.title = 'Next Wave';
       }
       if (this.clearWaveBtn) {
-        this.clearWaveBtn.innerHTML = '';
         const ic = icons.clear({ width: 18, height: 18 });
         if (ic) this.clearWaveBtn.appendChild(ic);
-        this.clearWaveBtn.title = 'Clear Wave';
       }
     } catch (e) {
-      // ignore icon injection errors; leave text buttons as-is
+      console.error('error injecting icons into HUD buttons: ', e);
     }
 
     const applyPlayerInputs = () => {
