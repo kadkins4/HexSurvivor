@@ -103,13 +103,22 @@ const Game = {
     this.player = new Player(this.width / 2, this.height / 2);
     this.enemies = [];
     this.projectiles = [];
-    // spawn initial demo enemies (mix of types — will be replaced by wave manager later)
-    // 3 Drones, 2 Strikers, 1 Tank
-    for (let i = 0; i < 3; i++)
-      this.enemies.push(Drone.spawnAtEdge(this.width, this.height));
-    for (let i = 0; i < 2; i++)
-      this.enemies.push(Striker.spawnAtEdge(this.width, this.height));
-    this.enemies.push(Tank.spawnAtEdge(this.width, this.height));
+    this.floatingTexts = [];
+
+    // reset wave manager to start at wave 1
+    if (this.waveManager) {
+      // set to zero so startNextWave() advances to wave 1
+      this.waveManager.waveIndex = 0;
+      this.waveManager.spawnQueue = [];
+      this.waveManager.spawning = false;
+      this.waveManager.waitingForClear = false;
+      this.waveManager.nextWaveTimer = 0;
+      this.waveManager.startNextWave();
+    } else {
+      this.waveManager = new WaveManager(this);
+      this.waveManager.startNextWave();
+    }
+
     this.running = true;
     this.lastTime = performance.now();
     requestAnimationFrame(this.loop.bind(this));

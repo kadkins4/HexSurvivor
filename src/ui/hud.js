@@ -94,15 +94,6 @@ export default class Hud {
     requestAnimationFrame(this._tick);
   }
 
-  _wireRestart() {
-    this.restartBtn = this.panel.querySelector('#restart-btn');
-    if (this.restartBtn) {
-      this.restartBtn.addEventListener('click', () => {
-        this.game.reset();
-      });
-    }
-  }
-
   _wirePanel() {
     // avoid double wiring
     if (this._wired) return;
