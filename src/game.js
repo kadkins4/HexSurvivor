@@ -1,8 +1,8 @@
 import Player from './entities/player.js';
 import Hud from './ui/hud.js';
-import Drone from './entities/drone.js';
-import Striker from './entities/striker.js';
-import Tank from './entities/tank.js';
+import Drone from './entities/enemy/enemies/drone.js';
+import Striker from './entities/enemy/enemies/striker.js';
+import Tank from './entities/enemy/enemies/tank.js';
 import Projectile from './entities/projectile.js';
 import FloatingText from './ui/floatingText.js';
 import resolveCircleSeparation from './systems/collision.js';
@@ -62,17 +62,17 @@ const Game = {
     this.updateProjectiles(dt);
     this.updateFloatingTexts(dt);
 
-    this.enemies = this.enemies.filter(e => !e.dead);
+    this.enemies = this.enemies.filter((e) => !e.dead);
   },
 
   updateProjectiles(dt) {
     for (let p of this.projectiles) p.update(dt, this);
-    this.projectiles = this.projectiles.filter(p => !p.dead);
+    this.projectiles = this.projectiles.filter((p) => !p.dead);
   },
 
   updateFloatingTexts(dt) {
     for (let f of this.floatingTexts) f.update(dt);
-    this.floatingTexts = this.floatingTexts.filter(f => !f.dead);
+    this.floatingTexts = this.floatingTexts.filter((f) => !f.dead);
   },
 
   render() {
@@ -105,17 +105,19 @@ const Game = {
     this.projectiles = [];
     // spawn initial demo enemies (mix of types — will be replaced by wave manager later)
     // 3 Drones, 2 Strikers, 1 Tank
-    for (let i = 0; i < 3; i++) this.enemies.push(Drone.spawnAtEdge(this.width, this.height));
-    for (let i = 0; i < 2; i++) this.enemies.push(Striker.spawnAtEdge(this.width, this.height));
+    for (let i = 0; i < 3; i++)
+      this.enemies.push(Drone.spawnAtEdge(this.width, this.height));
+    for (let i = 0; i < 2; i++)
+      this.enemies.push(Striker.spawnAtEdge(this.width, this.height));
     this.enemies.push(Tank.spawnAtEdge(this.width, this.height));
     this.running = true;
     this.lastTime = performance.now();
     requestAnimationFrame(this.loop.bind(this));
-  }
+  },
 
-  ,spawnFloatingText(x, y, text, color = '#fff') {
+  spawnFloatingText(x, y, text, color = '#fff') {
     this.floatingTexts.push(new FloatingText(x, y, text, color));
-  }
+  },
 };
 
 export default Game;

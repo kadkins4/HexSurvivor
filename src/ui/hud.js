@@ -1,6 +1,6 @@
-import Drone from '../entities/drone.js';
-import Striker from '../entities/striker.js';
-import Tank from '../entities/tank.js';
+import Drone from '../entities/enemy/enemies/drone.js';
+import Striker from '../entities/enemy/enemies/striker.js';
+import Tank from '../entities/enemy/enemies/tank.js';
 
 export default class Hud {
   constructor(root, game) {
@@ -8,24 +8,18 @@ export default class Hud {
     this.root = root;
     this.el = document.createElement('div');
     this.el.className = 'hud';
+    this.el.style = 'margin-left:20px';
     this.root.appendChild(this.el);
     this._tick = this._tick.bind(this);
-
-    // create restart button fixed on the left
-    this.restartBtn = document.createElement('button');
-    this.restartBtn.className = 'restart-btn';
-    this.restartBtn.textContent = 'Restart';
-    this.restartBtn.addEventListener('click', () => {
-      this.game.reset();
-    });
-    document.body.appendChild(this.restartBtn);
 
     // control panel (adjust player stats + spawn enemies)
     this.panel = document.createElement('div');
     this.panel.className = 'control-panel';
 
-    // use collapsible sections for Player / Spawner / Wave
-    this.panel.innerHTML = `
+    // load the full HUD (controls + dev tools) from external file for easier editing
+    this.panel.innerHTML = '<div class="loading">Loading...</div>';
+    const devPath = '/src/ui/hud-dev.html';
+    const fallback = `
       <details open>
         <summary class="small">Player Controls</summary>
         <label>Max HP<input id="ctl-maxhp" type="number" step="1"></label>
@@ -64,13 +58,55 @@ export default class Hud {
           <button id="clear-wave" class="spawn-btn">Clear Wave</button>
         </div>
       </details>
+
+      <details>
+        <summary class="small">DEV TOOLS</summary>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:6px;">
+          <button id="restart-btn" class="spawn-btn">Restart</button>
+        </div>
+      </details>
     `;
+
+    fetch(devPath)
+      .then((res) => {
+        if (!res.ok) throw new Error('no dev file');
+        return res.text();
+      })
+      .then((html) => {
+        this.panel.innerHTML = html;
+        this._wirePanel();
+      })
+      .catch(() => {
+        this.panel.innerHTML = fallback;
+        this._wirePanel();
+      });
 
     // append to UI root (sidebar) if available, else body
     const mount = this.root || document.body;
     mount.appendChild(this.panel);
 
-    // wire inputs
+    // NOTE: HUD HTML is loaded above (fetch -> _wirePanel). No second insert required.
+
+    // wiring is done after the HUD document is injected (see _wirePanel)
+    // start HUD update loop after panel and inputs exist
+    this.update();
+    requestAnimationFrame(this._tick);
+  }
+
+  _wireRestart() {
+    this.restartBtn = this.panel.querySelector('#restart-btn');
+    if (this.restartBtn) {
+      this.restartBtn.addEventListener('click', () => {
+        this.game.reset();
+      });
+    }
+  }
+
+  _wirePanel() {
+    // avoid double wiring
+    if (this._wired) return;
+    this._wired = true;
+
     this.maxHpInput = this.panel.querySelector('#ctl-maxhp');
     this.dmgInput = this.panel.querySelector('#ctl-dmg');
     this.frInput = this.panel.querySelector('#ctl-fr');
@@ -93,39 +129,70 @@ export default class Hud {
     this.nextWaveBtn = this.panel.querySelector('#next-wave');
     this.clearWaveBtn = this.panel.querySelector('#clear-wave');
 
-    this.spawnDroneBtn.addEventListener('click', () => {
-      const e = Drone.spawnAtEdge(this.game.width, this.game.height);
-      this.game.enemies.push(e);
-    });
-    this.spawnStrikerBtn.addEventListener('click', () => {
-      const e = Striker.spawnAtEdge(this.game.width, this.game.height);
-      this.game.enemies.push(e);
-    });
-    this.spawnTankBtn.addEventListener('click', () => {
-      const e = Tank.spawnAtEdge(this.game.width, this.game.height);
-      this.game.enemies.push(e);
-    });
+    // basic DEV controls
+    this.invincibleChk = this.panel.querySelector('#invincible');
+    this.restartBtn = this.panel.querySelector('#restart-btn');
+    if (this.restartBtn)
+      this.restartBtn.addEventListener('click', () => {
+        this.game.reset();
+      });
 
-    this.spawnMultiBtn.addEventListener('click', () => {
-      const d = Number(this.countDrone.value) || 0;
-      const s = Number(this.countStriker.value) || 0;
-      const t = Number(this.countTank.value) || 0;
-      for (let i = 0; i < d; i++) this.game.enemies.push(Drone.spawnAtEdge(this.game.width, this.game.height));
-      for (let i = 0; i < s; i++) this.game.enemies.push(Striker.spawnAtEdge(this.game.width, this.game.height));
-      for (let i = 0; i < t; i++) this.game.enemies.push(Tank.spawnAtEdge(this.game.width, this.game.height));
-    });
+    if (this.spawnDroneBtn)
+      this.spawnDroneBtn.addEventListener('click', () => {
+        const e = Drone.spawnAtEdge(this.game.width, this.game.height);
+        this.game.enemies.push(e);
+      });
+    if (this.spawnStrikerBtn)
+      this.spawnStrikerBtn.addEventListener('click', () => {
+        const e = Striker.spawnAtEdge(this.game.width, this.game.height);
+        this.game.enemies.push(e);
+      });
+    if (this.spawnTankBtn)
+      this.spawnTankBtn.addEventListener('click', () => {
+        const e = Tank.spawnAtEdge(this.game.width, this.game.height);
+        this.game.enemies.push(e);
+      });
 
-    this.startCustomBtn.addEventListener('click', () => {
-      const d = Number(this.customDrones.value) || 0;
-      const s = Number(this.customStrikers.value) || 0;
-      const t = Number(this.customTanks.value) || 0;
-      if (this.game.waveManager) this.game.waveManager.startCustomWave(d, s, t);
-    });
-    this.restartWaveBtn.addEventListener('click', () => { if (this.game.waveManager) this.game.waveManager.restartWave(); });
-    this.nextWaveBtn.addEventListener('click', () => { if (this.game.waveManager) this.game.waveManager.startNextWave(); });
-    this.clearWaveBtn.addEventListener('click', () => { if (this.game.waveManager) this.game.waveManager.clearWave(); });
+    if (this.spawnMultiBtn)
+      this.spawnMultiBtn.addEventListener('click', () => {
+        const d = Number(this.countDrone.value) || 0;
+        const s = Number(this.countStriker.value) || 0;
+        const t = Number(this.countTank.value) || 0;
+        for (let i = 0; i < d; i++)
+          this.game.enemies.push(
+            Drone.spawnAtEdge(this.game.width, this.game.height)
+          );
+        for (let i = 0; i < s; i++)
+          this.game.enemies.push(
+            Striker.spawnAtEdge(this.game.width, this.game.height)
+          );
+        for (let i = 0; i < t; i++)
+          this.game.enemies.push(
+            Tank.spawnAtEdge(this.game.width, this.game.height)
+          );
+      });
 
-    // input change handlers
+    if (this.startCustomBtn)
+      this.startCustomBtn.addEventListener('click', () => {
+        const d = Number(this.customDrones.value) || 0;
+        const s = Number(this.customStrikers.value) || 0;
+        const t = Number(this.customTanks.value) || 0;
+        if (this.game.waveManager)
+          this.game.waveManager.startCustomWave(d, s, t);
+      });
+    if (this.restartWaveBtn)
+      this.restartWaveBtn.addEventListener('click', () => {
+        if (this.game.waveManager) this.game.waveManager.restartWave();
+      });
+    if (this.nextWaveBtn)
+      this.nextWaveBtn.addEventListener('click', () => {
+        if (this.game.waveManager) this.game.waveManager.startNextWave();
+      });
+    if (this.clearWaveBtn)
+      this.clearWaveBtn.addEventListener('click', () => {
+        if (this.game.waveManager) this.game.waveManager.clearWave();
+      });
+
     const applyPlayerInputs = () => {
       const p = this.game.player;
       if (!p) return;
@@ -133,8 +200,6 @@ export default class Hud {
       const dmg = Number(this.dmgInput.value) || p.damage;
       const fr = Number(this.frInput.value) || p.fireRate;
       const range = Number(this.rangeInput.value) || p.range;
-      // apply
-      // if maxHp changed, scale current hp proportionally
       const prevMax = p.maxHp;
       p.maxHp = maxHp;
       if (prevMax > 0) p.hp = Math.min(p.maxHp, (p.hp / prevMax) * p.maxHp);
@@ -143,13 +208,21 @@ export default class Hud {
       p.range = range;
     };
 
-    this.maxHpInput.addEventListener('change', applyPlayerInputs);
-    this.dmgInput.addEventListener('change', applyPlayerInputs);
-    this.frInput.addEventListener('change', applyPlayerInputs);
-    this.rangeInput.addEventListener('change', applyPlayerInputs);
-    // start HUD update loop after panel and inputs exist
-    this.update();
-    requestAnimationFrame(this._tick);
+    if (this.maxHpInput)
+      this.maxHpInput.addEventListener('change', applyPlayerInputs);
+    if (this.dmgInput)
+      this.dmgInput.addEventListener('change', applyPlayerInputs);
+    if (this.frInput)
+      this.frInput.addEventListener('change', applyPlayerInputs);
+    if (this.rangeInput)
+      this.rangeInput.addEventListener('change', applyPlayerInputs);
+
+    if (this.invincibleChk)
+      this.invincibleChk.addEventListener('change', () => {
+        const p = this.game.player;
+        if (!p) return;
+        p.invincible = !!this.invincibleChk.checked;
+      });
   }
 
   _tick() {
@@ -161,13 +234,18 @@ export default class Hud {
     const p = this.game.player;
     const enemies = this.game.enemies.length;
     if (p) {
-      // populate inputs with current values if empty
-      if (!this.maxHpInput.value) this.maxHpInput.value = Math.round(p.maxHp);
-      if (!this.dmgInput.value) this.dmgInput.value = Math.round(p.damage);
-      if (!this.frInput.value) this.frInput.value = p.fireRate;
-      if (!this.rangeInput.value) this.rangeInput.value = Math.round(p.range);
+      // populate inputs with current values if empty (guard inputs may not be wired yet)
+      if (this.maxHpInput && !this.maxHpInput.value)
+        this.maxHpInput.value = Math.round(p.maxHp);
+      if (this.dmgInput && !this.dmgInput.value)
+        this.dmgInput.value = Math.round(p.damage);
+      if (this.frInput && !this.frInput.value) this.frInput.value = p.fireRate;
+      if (this.rangeInput && !this.rangeInput.value)
+        this.rangeInput.value = Math.round(p.range);
     }
-    const waveNum = (this.game.waveManager) ? this.game.waveManager.getWaveNumber() : 0;
+    const waveNum = this.game.waveManager
+      ? this.game.waveManager.getWaveNumber()
+      : 0;
     this.el.innerHTML = `
       <div>Wave: ${waveNum}</div>
       <div>HP: ${Math.round(p.hp)} / ${Math.round(p.maxHp)}</div>

@@ -1,4 +1,4 @@
-import Enemy from './enemy.js';
+import Enemy from '../enemy.js';
 import {
   STRIKER_HP,
   STRIKER_APPROACH_SPEED,
@@ -6,8 +6,8 @@ import {
   STRIKER_CHARGE_RANGE,
   STRIKER_CHARGE_TIME,
   STRIKER_RADIUS,
-  STRIKER_EXPLODE_DAMAGE
-} from '../constants';
+  STRIKER_EXPLODE_DAMAGE,
+} from '../../../constants.js';
 
 export default class Striker extends Enemy {
   constructor(x, y) {
@@ -24,10 +24,19 @@ export default class Striker extends Enemy {
   static spawnAtEdge(width, height) {
     const side = Math.floor(Math.random() * 4);
     let x, y;
-    if (side === 0) { x = -30; y = Math.random() * height; }
-    else if (side === 1) { x = width + 30; y = Math.random() * height; }
-    else if (side === 2) { x = Math.random() * width; y = -30; }
-    else { x = Math.random() * width; y = height + 30; }
+    if (side === 0) {
+      x = -30;
+      y = Math.random() * height;
+    } else if (side === 1) {
+      x = width + 30;
+      y = Math.random() * height;
+    } else if (side === 2) {
+      x = Math.random() * width;
+      y = -30;
+    } else {
+      x = Math.random() * width;
+      y = height + 30;
+    }
     return new Striker(x, y);
   }
 
@@ -41,7 +50,10 @@ export default class Striker extends Enemy {
 
     if (this.state === 'approach') {
       // move slowly toward player until in charge range
-      const move = Math.min(this.speed * dt, Math.max(0, dist - (this.radius + game.player.radius)));
+      const move = Math.min(
+        this.speed * dt,
+        Math.max(0, dist - (this.radius + game.player.radius))
+      );
       if (move > 0) {
         this.x += (dx / dist) * move;
         this.y += (dy / dist) * move;
@@ -56,7 +68,8 @@ export default class Striker extends Enemy {
         // lock dash direction and go
         const nx = dx / dist;
         const ny = dy / dist;
-        this.dashDir.x = nx; this.dashDir.y = ny;
+        this.dashDir.x = nx;
+        this.dashDir.y = ny;
         this.state = 'dashing';
       }
     } else if (this.state === 'dashing') {
@@ -64,14 +77,25 @@ export default class Striker extends Enemy {
       this.x += this.dashDir.x * this.dashSpeed * dt;
       this.y += this.dashDir.y * this.dashSpeed * dt;
       // check collision with player
-      const newDist = Math.hypot(game.player.x - this.x, game.player.y - this.y);
+      const newDist = Math.hypot(
+        game.player.x - this.x,
+        game.player.y - this.y
+      );
       const minDist = this.radius + game.player.radius;
       if (newDist <= minDist + 0.01) {
         // deal explode damage and die
         game.player.hp -= STRIKER_EXPLODE_DAMAGE;
-        if (game.player.hp <= 0) { game.player.hp = 0; game.running = false; }
+        if (game.player.hp <= 0) {
+          game.player.hp = 0;
+          game.running = false;
+        }
         if (typeof game.spawnFloatingText === 'function') {
-          game.spawnFloatingText(game.player.x, game.player.y - game.player.radius - 6, `-${Math.round(STRIKER_EXPLODE_DAMAGE)}`, '#ff7b7b');
+          game.spawnFloatingText(
+            game.player.x,
+            game.player.y - game.player.radius - 6,
+            `-${Math.round(STRIKER_EXPLODE_DAMAGE)}`,
+            '#ff7b7b'
+          );
         }
         this.die();
       }

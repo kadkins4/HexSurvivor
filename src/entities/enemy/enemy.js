@@ -1,9 +1,16 @@
-import { ENEMY_BASE_HP, ENEMY_BASE_SPEED, ENEMY_BASE_RADIUS, ENEMY_CONTACT_DPS } from "../constants";
+import {
+  ENEMY_BASE_HP,
+  ENEMY_BASE_SPEED,
+  ENEMY_BASE_RADIUS,
+  ENEMY_CONTACT_DPS,
+} from '../../constants';
 
 export default class Enemy {
   constructor(x, y, hp = ENEMY_BASE_HP, speed = ENEMY_BASE_SPEED) {
-    this.x = x; this.y = y;
-    this.hp = hp; this.maxHp = hp;
+    this.x = x;
+    this.y = y;
+    this.hp = hp;
+    this.maxHp = hp;
     this.speed = speed;
     this.dead = false;
     this.radius = ENEMY_BASE_RADIUS;
@@ -44,7 +51,12 @@ export default class Enemy {
         this.hitTimer = 0.18;
         const shown = Math.max(1, Math.round(dmg));
         if (typeof game.spawnFloatingText === 'function') {
-          game.spawnFloatingText(game.player.x, game.player.y - game.player.radius - 6, `-${shown}`, '#ff7b7b');
+          game.spawnFloatingText(
+            game.player.x,
+            game.player.y - game.player.radius - 6,
+            `-${shown}`,
+            '#ff7b7b'
+          );
         }
       }
     }
@@ -52,14 +64,25 @@ export default class Enemy {
 
   takeDamage(amount, game) {
     this.hp -= amount;
-    if (typeof game !== 'undefined' && game && typeof game.spawnFloatingText === 'function') {
+    if (
+      typeof game !== 'undefined' &&
+      game &&
+      typeof game.spawnFloatingText === 'function'
+    ) {
       const shown = Math.max(1, Math.round(amount));
-      game.spawnFloatingText(this.x, this.y - this.radius - 6, `-${shown}`, '#ffe47a');
+      game.spawnFloatingText(
+        this.x,
+        this.y - this.radius - 6,
+        `-${shown}`,
+        '#ffe47a'
+      );
     }
     if (this.hp <= 0) this.die();
   }
 
-  die() { this.dead = true; }
+  die() {
+    this.dead = true;
+  }
 
   render(ctx) {
     ctx.save();

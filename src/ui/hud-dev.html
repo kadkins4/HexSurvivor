@@ -1,0 +1,56 @@
+<div>
+  <summary class="large" style="margin: 0px 0px 5px">Dev Tools:</summary>
+  <button id="restart-btn" class="spawn-btn">Restart</button>
+
+  <details open>
+    <summary class="small">Player Controls</summary>
+    <label>Max HP<input id="ctl-maxhp" type="number" step="1" /></label>
+    <label>Damage<input id="ctl-dmg" type="number" step="1" /></label>
+    <label>Fire Rate<input id="ctl-fr" type="number" step="0.1" /></label>
+    <label>Range<input id="ctl-range" type="number" step="1" /></label>
+    <label><input id="invincible" type="checkbox" /> Invincible</label>
+  </details>
+
+  <details>
+    <summary class="small">Enemy Spawner</summary>
+    <div style="display: flex; gap: 6px; margin-top: 6px">
+      <button id="spawn-drone" class="spawn-btn">Spawn Drone</button>
+      <button id="spawn-striker" class="spawn-btn">Spawn Striker</button>
+      <button id="spawn-tank" class="spawn-btn">Spawn Tank</button>
+    </div>
+    <details>
+      <summary class="small" style="margin-top: 8px">Quick Spawn</summary>
+      <label
+        >Drone<input id="count-drone" type="number" step="1" value="3"
+      /></label>
+      <label
+        >Striker<input id="count-striker" type="number" step="1" value="2"
+      /></label>
+      <label
+        >Tank<input id="count-tank" type="number" step="1" value="1"
+      /></label>
+      <button id="spawn-multi" class="spawn-btn">Spawn Multiple</button>
+    </details>
+  </details>
+
+  <details>
+    <summary class="small">Wave</summary>
+    <div style="margin-top: 6px">
+      <label
+        >Drones<input id="custom-drones" type="number" step="1" value="5"
+      /></label>
+      <label
+        >Strikers<input id="custom-strikers" type="number" step="1" value="2"
+      /></label>
+      <label
+        >Tanks<input id="custom-tanks" type="number" step="1" value="0"
+      /></label>
+      <button id="start-custom-wave" class="spawn-btn">Start Wave</button>
+    </div>
+    <div style="display: flex; gap: 6px; margin-top: 8px">
+      <button id="restart-wave" class="spawn-btn">Restart Wave</button>
+      <button id="next-wave" class="spawn-btn">Next Wave</button>
+      <button id="clear-wave" class="spawn-btn">Clear Wave</button>
+    </div>
+  </details>
+</div>

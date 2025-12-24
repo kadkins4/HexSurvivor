@@ -1,6 +1,6 @@
-import Drone from '../entities/drone.js';
-import Striker from '../entities/striker.js';
-import Tank from '../entities/tank.js';
+import Drone from '../entities/enemy/enemies/drone.js';
+import Striker from '../entities/enemy/enemies/striker.js';
+import Tank from '../entities/enemy/enemies/tank.js';
 
 export default class WaveManager {
   constructor(game) {
@@ -68,7 +68,7 @@ export default class WaveManager {
     // simple progression: base drones, add strikers after wave 3, add occasional tank
     const base = 6 + this.waveIndex * 2;
     const strikers = Math.max(0, Math.floor((this.waveIndex - 2) / 2));
-    const tanks = (this.waveIndex % 5 === 0) ? 1 : 0;
+    const tanks = this.waveIndex % 5 === 0 ? 1 : 0;
     const drones = Math.max(0, base - strikers * 2 - tanks * 3);
 
     const q = [];
@@ -109,11 +109,16 @@ export default class WaveManager {
 
   spawnOne(type) {
     let ent = null;
-    if (type === 'drone') ent = Drone.spawnAtEdge(this.game.width, this.game.height);
-    else if (type === 'striker') ent = Striker.spawnAtEdge(this.game.width, this.game.height);
-    else if (type === 'tank') ent = Tank.spawnAtEdge(this.game.width, this.game.height);
+    if (type === 'drone')
+      ent = Drone.spawnAtEdge(this.game.width, this.game.height);
+    else if (type === 'striker')
+      ent = Striker.spawnAtEdge(this.game.width, this.game.height);
+    else if (type === 'tank')
+      ent = Tank.spawnAtEdge(this.game.width, this.game.height);
     if (ent) this.game.enemies.push(ent);
   }
 
-  getWaveNumber() { return this.waveIndex; }
+  getWaveNumber() {
+    return this.waveIndex;
+  }
 }
