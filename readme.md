@@ -1,5 +1,7 @@
 # HEX HOLD — Game Design Document (GDD)
 
+<p align="center"><img src="favicon.svg" alt="HexHold icon" width="48" height="48" /></p>
+
 **Genre:** Idle / auto-shooter tower defense (arena defense)  
 **Platform:** PC Web (HTML5 Canvas, JS/HTML/CSS)
 **Target build time (v0):** ~5 hours  
