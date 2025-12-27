@@ -31,9 +31,9 @@ window.addEventListener('load', () => {
     }
     // re-enable buttons
     if (btnNew) btnNew.disabled = false;
-    if (btnLoad) btnLoad.disabled = false;
-    if (btnOptions) btnOptions.disabled = false;
-    if (btnAbout) btnAbout.disabled = false;
+    if (btnLoad) btnLoad.disabled = true;
+    if (btnOptions) btnOptions.disabled = true;
+    if (btnAbout) btnAbout.disabled = true;
     menu.style.display = 'flex';
   }
 
