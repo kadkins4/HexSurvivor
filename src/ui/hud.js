@@ -53,6 +53,7 @@ export default class Hud {
     this.dmgInput = this.panel.querySelector('#ctl-dmg');
     this.frInput = this.panel.querySelector('#ctl-fr');
     this.rangeInput = this.panel.querySelector('#ctl-range');
+    this.lsInput = this.panel.querySelector('#ctl-lifesteal');
 
     this.spawnDroneBtn = this.panel.querySelector('#spawn-drone');
     this.spawnChargerBtn = this.panel.querySelector('#spawn-charger');
@@ -169,6 +170,10 @@ export default class Hud {
       p.damage = dmg;
       p.fireRate = fr;
       p.range = range;
+      if (this.lsInput) {
+        const v = this.lsInput.value;
+        if (v !== '') p.lifesteal = Number(v) / 100;
+      }
     };
 
     if (this.maxHpInput)
@@ -179,6 +184,8 @@ export default class Hud {
       this.frInput.addEventListener('change', applyPlayerInputs);
     if (this.rangeInput)
       this.rangeInput.addEventListener('change', applyPlayerInputs);
+    if (this.lsInput)
+      this.lsInput.addEventListener('change', applyPlayerInputs);
 
     if (this.invincibleChk)
       this.invincibleChk.addEventListener('change', () => {
@@ -205,6 +212,8 @@ export default class Hud {
       if (this.frInput && !this.frInput.value) this.frInput.value = p.fireRate;
       if (this.rangeInput && !this.rangeInput.value)
         this.rangeInput.value = Math.round(p.range);
+      if (this.lsInput && !this.lsInput.value)
+        this.lsInput.value = Math.round((p.lifesteal || 0) * 100);
     }
     const waveNum = this.game.waveManager
       ? this.game.waveManager.getWaveNumber()

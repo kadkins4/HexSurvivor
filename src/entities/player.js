@@ -19,6 +19,7 @@ export default class Player {
     this.range = PLAYER_BASE_RANGE;
     this.fireTimer = 0;
     this.hitFlash = 0; // seconds remaining for hit flash
+    this.lifesteal = 0; // fraction (e.g. 0.15 = 15%)
   }
 
   update(dt, game) {
@@ -36,7 +37,7 @@ export default class Player {
       if (this.fireTimer <= 0) {
         this.fireTimer = 1 / this.fireRate;
         // spawn a small projectile that travels to the target
-        game.spawnProjectile(this.x, this.y, target, this.damage);
+        game.spawnProjectile(this.x, this.y, target, this.damage, this);
       }
     }
   }

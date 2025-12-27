@@ -13,7 +13,8 @@ export default class Projectile {
     y,
     target,
     damage = PROJECTILE_DAMAGE,
-    speed = PROJECTILE_SPEED
+    speed = PROJECTILE_SPEED,
+    source = null
   ) {
     this.x = x;
     this.y = y;
@@ -22,6 +23,7 @@ export default class Projectile {
     this.speed = speed;
     this.radius = PROJECTILE_RADIUS;
     this.dead = false;
+    this.source = source;
   }
 
   update(dt, game) {
@@ -43,6 +45,33 @@ export default class Projectile {
     ) {
       if (typeof this.target.takeDamage === 'function')
         this.target.takeDamage(this.damage, game);
+
+      // apply lifesteal to source (if provided)
+      try {
+        if (
+          this.source &&
+          typeof this.source.lifesteal === 'number' &&
+          this.source.lifesteal > 0
+        ) {
+          const heal = this.damage * this.source.lifesteal;
+          if (
+            typeof this.source.hp === 'number' &&
+            typeof this.source.maxHp === 'number'
+          ) {
+            this.source.hp = Math.min(this.source.maxHp, this.source.hp + heal);
+            if (game && typeof game.spawnFloatingText === 'function') {
+              game.spawnFloatingText(
+                this.source.x,
+                this.source.y - this.source.radius - 6,
+                `+${Math.max(1, Math.round(heal))}`,
+                '#76ffb6'
+              );
+            }
+          }
+        }
+      } catch (e) {
+        // defensive: ignore lifesteal errors
+      }
 
       if (typeof game.spawnExplosion === 'function') {
         game.spawnExplosion(this.x, this.y, {

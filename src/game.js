@@ -145,8 +145,8 @@ const Game = {
     ctx.restore();
   },
 
-  spawnProjectile(x, y, target, damage = 10) {
-    this.projectiles.push(new Projectile(x, y, target, damage));
+  spawnProjectile(x, y, target, damage = 10, source = null) {
+    this.projectiles.push(new Projectile(x, y, target, damage, undefined, source));
   },
 
   spawnExplosion(x, y, opts = {}) {
