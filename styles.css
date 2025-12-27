@@ -37,6 +37,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 canvas {
   background: linear-gradient(180deg, #071018 0%, #051018 100%);
@@ -126,4 +127,56 @@ canvas {
 .control-panel hr {
   margin: 10px 0;
   border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Menu overlay */
+.menu-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(3,6,10,0.6), rgba(3,6,10,0.6));
+  z-index: 800;
+}
+.menu-box {
+  background: rgba(5,10,14,0.9);
+  padding: 28px 34px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  text-align: center;
+  color: #e6eef6;
+  min-width: 320px;
+}
+.menu-title {
+  margin: 0 0 16px 0;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+.menu-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.menu-btn {
+  padding: 10px 14px;
+  background: #0f2030;
+  color: #cfe7ff;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 88px;
+}
+.menu-btn.primary { background: linear-gradient(180deg,#1a8cff,#0d6fd6); color: #fff; }
+.menu-btn:disabled { opacity: 0.5; cursor: default; }
+.menu-countdown { margin-top: 12px; font-size: 20px; color: #9fd9ff; height: 24px; }
+
+.menu-wave {
+  font-size: 20px;
+  color: #ffd36b;
+  margin-bottom: 10px;
+  font-weight: 600;
+  min-height: 26px;
+}
+
+/* Small responsive tweak */
+@media (max-width: 420px) {
+  .menu-box { min-width: 260px; padding: 18px; }
+  .menu-title { font-size: 22px; }
 }

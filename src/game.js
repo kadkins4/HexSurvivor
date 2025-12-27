@@ -25,6 +25,8 @@ const Game = {
   lastTime: 0,
   delta: 0,
   running: true,
+  started: false,
+  _menuShown: false,
 
   init(canvas, uiRoot) {
     this.canvas = canvas;
@@ -35,13 +37,23 @@ const Game = {
     this.hud = new Hud(uiRoot, this);
 
     this.waveManager = new WaveManager(this);
-    this.waveManager.startNextWave();
 
     this.explosions = [];
 
     this.projectiles = [];
     this.floatingTexts = [];
 
+    this.lastTime = performance.now();
+    requestAnimationFrame(this.loop.bind(this));
+  },
+
+  // begin the actual run (called after menu countdown)
+  start() {
+    if (this.started) return;
+    this.started = true;
+
+    if (this.waveManager) this.waveManager.startNextWave();
+    this.running = true;
     this.lastTime = performance.now();
     requestAnimationFrame(this.loop.bind(this));
   },
@@ -55,6 +67,7 @@ const Game = {
   },
 
   update(dt) {
+    if (!this.started) return; // pause updates until the player starts
     this.player.update(dt, this);
     for (let e of this.enemies) e.update(dt, this);
     // resolve enemy separation (moved to helper for readability)
@@ -78,6 +91,26 @@ const Game = {
     }
 
     this.enemies = this.enemies.filter((e) => !e.dead);
+
+    // check for player death and show menu once
+    if (this.player && this.player.hp <= 0) {
+      this.running = false;
+      if (!this._menuShown) {
+        this._menuShown = true;
+        const wave = this.waveManager ? this.waveManager.getWaveNumber() : 0;
+        if (typeof this.showMenu === 'function') this.showMenu(wave);
+        else {
+          // fallback: directly manipulate DOM
+          const menu = document.getElementById('menu-overlay');
+          const mw = document.getElementById('menu-wave');
+          if (mw) {
+            mw.textContent = `You died on Wave ${wave}`;
+            mw.setAttribute('aria-hidden', 'false');
+          }
+          if (menu) menu.style.display = 'flex';
+        }
+      }
+    }
   },
 
   updateProjectiles(dt) {
@@ -146,7 +179,9 @@ const Game = {
   },
 
   spawnProjectile(x, y, target, damage = 10, source = null) {
-    this.projectiles.push(new Projectile(x, y, target, damage, undefined, source));
+    this.projectiles.push(
+      new Projectile(x, y, target, damage, undefined, source)
+    );
   },
 
   spawnExplosion(x, y, opts = {}) {
@@ -162,6 +197,7 @@ const Game = {
 
   // reset game state to start a fresh run
   reset() {
+    this._menuShown = false;
     // recreate player and clear entities
     this.player = new Player(this.width / 2, this.height / 2);
     this.enemies = [];

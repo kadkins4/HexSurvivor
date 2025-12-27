@@ -13,7 +13,26 @@
         <div id="ui-root"></div>
       </aside>
       <main id="play-area">
-        <canvas id="game-canvas" width="850" height="750"></canvas>
+        <canvas id="game-canvas" width="900" height="800"></canvas>
+        <div id="menu-overlay" class="menu-overlay">
+          <div class="menu-box">
+            <h1 class="menu-title">HexHold</h1>
+            <div id="menu-wave" class="menu-wave" aria-hidden="true"></div>
+            <div class="menu-buttons">
+              <button id="menu-new" class="menu-btn primary">NEW</button>
+              <button id="menu-load" class="menu-btn" disabled>LOAD</button>
+              <button id="menu-options" class="menu-btn" disabled>
+                OPTIONS
+              </button>
+              <button id="menu-about" class="menu-btn" disabled>ABOUT</button>
+            </div>
+            <div
+              id="menu-countdown"
+              class="menu-countdown"
+              aria-hidden="true"
+            ></div>
+          </div>
+        </div>
       </main>
     </div>
     <script type="module" src="/src/main.js"></script>
