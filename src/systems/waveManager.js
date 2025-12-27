@@ -12,7 +12,7 @@ export default class WaveManager {
     this.spawnTimer = 0;
     this.spawning = false;
     this.waitingForClear = false;
-    this.nextWaveDelay = 2.0;
+    this.nextWaveDelay = 3.5;
     this.nextWaveTimer = 0;
   }
 
@@ -110,12 +110,19 @@ export default class WaveManager {
 
   spawnOne(type) {
     let ent = null;
-    if (type === 'drone')
-      ent = Drone.spawnAtEdge(this.game.width, this.game.height);
-    else if (type === 'charger')
-      ent = Charger.spawnAtEdge(this.game.width, this.game.height);
-    else if (type === 'tank')
-      ent = Tank.spawnAtEdge(this.game.width, this.game.height);
+    switch (type) {
+      case 'drone':
+        ent = Drone.spawnAtEdge(this.game.width, this.game.height);
+        break;
+      case 'charger':
+        ent = Charger.spawnAtEdge(this.game.width, this.game.height);
+        break;
+      case 'tank':
+        ent = Tank.spawnAtEdge(this.game.width, this.game.height);
+        break;
+      default:
+        break;
+    }
     if (ent) this.game.enemies.push(ent);
   }
 
