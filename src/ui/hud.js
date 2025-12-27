@@ -74,6 +74,7 @@ export default class Hud {
 
     // basic DEV controls
     this.invincibleChk = this.panel.querySelector('#invincible');
+    this.timeScaleSelect = this.panel.querySelector('#time-scale');
     this.restartBtn = this.panel.querySelector('#restart-btn');
     if (this.restartBtn)
       this.restartBtn.addEventListener('click', () => {
@@ -193,6 +194,12 @@ export default class Hud {
         if (!p) return;
         p.invincible = !!this.invincibleChk.checked;
       });
+
+    if (this.timeScaleSelect)
+      this.timeScaleSelect.addEventListener('change', () => {
+        const v = Number(this.timeScaleSelect.value) || 1;
+        this.game.timeScale = v;
+      });
   }
 
   _tick() {
@@ -218,6 +225,10 @@ export default class Hud {
     const waveNum = this.game.waveManager
       ? this.game.waveManager.getWaveNumber()
       : 0;
+
+    // ensure time scale select reflects current game setting
+    if (this.timeScaleSelect && !this.timeScaleSelect.value)
+      this.timeScaleSelect.value = String(this.game.timeScale || 1);
 
     this.el.innerHTML = `
       <div>Wave: ${waveNum}</div>

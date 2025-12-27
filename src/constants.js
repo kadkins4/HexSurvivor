@@ -26,7 +26,7 @@ export const PLAYER_HITFLASH_DURATION = 0.18;
 // UI
 export const FLOATING_TEXT_LIFETIME = 0.9;
 
-// Wave / spawning
+// WAVE / SPAWNING
 export const BASE_ENEMIES_SPAWNED = 0;
 export const WAVE_SPAWN_INTERVAL = 0.3;
 
@@ -61,5 +61,4 @@ export const TANK_SPEED = 20;
 export const TANK_RADIUS = 18;
 export const TANK_CONTACT_DPS = 18;
 
-// margin outside the visible arena where entities are killed
-export const FENCE_AREA = 40;
+export const FENCE_AREA = 40; // margin outside the visible arena where entities are killed

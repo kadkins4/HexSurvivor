@@ -24,6 +24,7 @@ const Game = {
   hud: null,
   lastTime: 0,
   delta: 0,
+  timeScale: 1,
   running: true,
   started: false,
   _menuShown: false,
@@ -61,7 +62,9 @@ const Game = {
   loop(ts) {
     this.delta = (ts - this.lastTime) / 1000;
     this.lastTime = ts;
-    this.update(this.delta);
+    // apply time scale for faster/slower simulation (render still runs at display fps)
+    const scaledDt = this.delta * (this.timeScale || 1);
+    this.update(scaledDt);
     this.render();
     if (this.running) requestAnimationFrame(this.loop.bind(this));
   },
