@@ -1,5 +1,7 @@
 <p align="center"><img src="favicon.svg" alt="HexHold icon" width="64" height="64" /></p>
 
+---
+
 # HEX HOLD
 
 **Genre:** Idle / auto-shooter tower defense (arena defense)  
