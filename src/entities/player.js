@@ -26,13 +26,41 @@ export default class Player {
     this.makeRangedAttack(dt, game);
   }
 
+  _incomingDamageTo(enemy, game) {
+    if (!game || !game.projectiles) return 0;
+    let sum = 0;
+    for (let p of game.projectiles) {
+      if (p && !p.dead && p.target === enemy) sum += p.damage || 0;
+    }
+    return sum;
+  }
+
+  findNearestValid(enemies, game) {
+    if (!enemies || enemies.length === 0) return null;
+    let closest = null;
+    let closestD = Infinity;
+    for (let e of enemies) {
+      // ignore enemies that will already die from pending projectiles
+      const incoming = this._incomingDamageTo(e, game);
+      if (e.hp - incoming <= 0) continue;
+      const dx = e.x - this.x;
+      const dy = e.y - this.y;
+      const d = Math.hypot(dx, dy);
+      if (d < closestD) {
+        closestD = d;
+        closest = e;
+      }
+    }
+    return closest;
+  }
+
   makeRangedAttack(dt, game) {
     // auto-fire at nearest enemy
     this.fireTimer -= dt;
     // decay hit flash
     if (this.hitFlash > 0) this.hitFlash = Math.max(0, this.hitFlash - dt);
     const enemies = game.enemies;
-    const target = this.findNearest(enemies);
+    const target = this.findNearestValid(enemies, game);
     if (target && this.inRange(target)) {
       if (this.fireTimer <= 0) {
         this.fireTimer = 1 / this.fireRate;
