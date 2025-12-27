@@ -21,13 +21,6 @@
 
 ## Files to create (suggested)
 
-- `index.html` — base page
-- `src/main.js` — bootstrap + app mounting
-- `src/game.js` — game loop, canvas setup, and scene manager
-- `src/entities/player.js` — player logic & stats
-- `src/entities/enemy.js` — base enemy class
-- `src/entities/drone.js`, `src/entities/striker.js` — enemy types
-- `src/systems/waveManager.js` — spawner & progression
 - `src/systems/shop.js` — upgrade pool & purchases
 - `src/ui/hud.js`, `src/ui/shopUI.js` — UI overlays
 

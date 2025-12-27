@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "start": "npm i && npm run format && npm run dev"
   },
   "devDependencies": {
     "prettier": "^3.7.4",
