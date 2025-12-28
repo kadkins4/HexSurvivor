@@ -153,6 +153,14 @@ canvas {
   font-size: 28px;
   letter-spacing: 1px;
 }
+.menu-icon {
+  display: inline-block;
+  position: relative;
+  top: 6px;
+  width: 32px;
+  height: 32px;
+  margin: 0 6px;
+}
 .menu-buttons {
   display: flex;
   gap: 10px;
