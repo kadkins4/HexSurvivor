@@ -9,6 +9,7 @@ import {
   SHAKE_INTENSITY_CONTACT,
   SHAKE_DURATION_CONTACT,
   FENCE_AREA,
+  TIMESCALE,
 } from './constants.js';
 
 const Game = {
@@ -24,7 +25,7 @@ const Game = {
   hud: null,
   lastTime: 0,
   delta: 0,
-  timeScale: 1,
+  timeScale: TIMESCALE.NORMAL,
   running: true,
   started: false,
   _menuShown: false,
@@ -63,7 +64,7 @@ const Game = {
     this.delta = (ts - this.lastTime) / 1000;
     this.lastTime = ts;
     // apply time scale for faster/slower simulation (render still runs at display fps)
-    const scaledDt = this.delta * (this.timeScale || 1);
+    const scaledDt = this.delta * (this.timeScale || TIMESCALE.NORMAL);
     this.update(scaledDt);
     this.render();
     if (this.running) requestAnimationFrame(this.loop.bind(this));

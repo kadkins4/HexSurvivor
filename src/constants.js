@@ -61,4 +61,18 @@ export const TANK_SPEED = 20;
 export const TANK_RADIUS = 18;
 export const TANK_CONTACT_DPS = 18;
 
+// SHIELD (meatshield)
+export const SHIELD_HP = 200;
+export const SHIELD_APPROACH_SPEED = 320; // moves very fast to reach orbit
+export const SHIELD_ORBIT_RANGE = 90; // distance from player to hold
+export const SHIELD_ORBIT_SPEED = 0.9; // radians per second
+export const SHIELD_LENGTH = 80; // visual length of the rectangle
+export const SHIELD_THICKNESS = 12; // visual thickness (also used to compute radius)
+
+// GAME
+export const TIMESCALE = {
+  NORMAL: 1,
+  FAST: 2,
+  SUPER: 3,
+};
 export const FENCE_AREA = 40; // margin outside the visible arena where entities are killed
