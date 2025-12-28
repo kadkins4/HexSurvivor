@@ -6,6 +6,8 @@ export default function resolveCircleSeparation(entities, jitter = 0.5) {
       const entA = entities[i];
       const entB = entities[j];
       if (!entA || !entB || entA.dead || entB.dead) continue;
+      // allow certain enemies (like a Shield) to let allies pass through
+      if (entA.passThroughAllies || entB.passThroughAllies) continue;
       const dx = entB.x - entA.x;
       const dy = entB.y - entA.y;
       let distance = Math.hypot(dx, dy);

@@ -1,6 +1,7 @@
 import Drone from '../entities/enemy/enemies/drone.js';
 import Charger from '../entities/enemy/enemies/charger.js';
 import Tank from '../entities/enemy/enemies/tank.js';
+import Shield from '../entities/enemy/enemies/shield.js';
 import { BASE_ENEMIES_SPAWNED, WAVE_SPAWN_INTERVAL } from '../constants.js';
 
 export default class WaveManager {
@@ -70,12 +71,14 @@ export default class WaveManager {
     const base = BASE_ENEMIES_SPAWNED + this.waveIndex * 2;
     const chargers = Math.max(0, Math.floor((this.waveIndex - 2) / 2));
     const tanks = this.waveIndex % 5 === 0 ? 1 : 0;
-    const drones = Math.max(0, base - chargers * 2 - tanks * 3);
+    const shields = this.waveIndex >= 4 && this.waveIndex % 4 === 0 ? 1 : 0;
+    const drones = Math.max(0, base - chargers * 2 - tanks * 3 - shields * 2);
 
     const q = [];
     for (let i = 0; i < drones; i++) q.push('drone');
     for (let i = 0; i < chargers; i++) q.push('charger');
     for (let i = 0; i < tanks; i++) q.push('tank');
+    for (let i = 0; i < shields; i++) q.push('shield');
 
     // simple shuffle
     for (let i = q.length - 1; i > 0; i--) {
@@ -119,6 +122,9 @@ export default class WaveManager {
         break;
       case 'tank':
         ent = Tank.spawnAtEdge(this.game.width, this.game.height);
+        break;
+      case 'shield':
+        ent = Shield.spawnAtEdge(this.game.width, this.game.height);
         break;
       default:
         break;
