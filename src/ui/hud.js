@@ -2,6 +2,7 @@ import Drone from '../entities/enemy/enemies/drone.js';
 import Charger from '../entities/enemy/enemies/charger.js';
 import Tank from '../entities/enemy/enemies/tank.js';
 import { icons } from './icons.js';
+import { TIMESCALE } from '../constants.js';
 
 export default class Hud {
   constructor(root, game) {
@@ -195,11 +196,89 @@ export default class Hud {
         p.invincible = !!this.invincibleChk.checked;
       });
 
-    if (this.timeScaleSelect)
+    if (this.timeScaleSelect) {
+      // populate options from TIMESCALE constant
+      const entries = Object.values(TIMESCALE)
+        .map((v) => v)
+        .sort((a, b) => a - b);
+      this.timeScaleSelect.innerHTML = '';
+
+      // add Pause option first
+      const pauseOpt = document.createElement('option');
+      pauseOpt.value = 'pause';
+      pauseOpt.textContent = 'Pause';
+      this.timeScaleSelect.appendChild(pauseOpt);
+
+      for (const e of entries) {
+        const opt = document.createElement('option');
+        opt.value = String(e);
+        opt.textContent = `${e}x`;
+        this.timeScaleSelect.appendChild(opt);
+      }
+
       this.timeScaleSelect.addEventListener('change', () => {
-        const v = Number(this.timeScaleSelect.value) || 1;
+        const val = this.timeScaleSelect.value;
+        if (val === 'pause') {
+          this.game.running = false;
+          return;
+        }
+        const v = Number(val) || TIMESCALE.NORMAL;
         this.game.timeScale = v;
+        if (this.game.started && !this.game.running) {
+          this.game.running = true;
+          this.game.lastTime = performance.now();
+          requestAnimationFrame(this.game.loop.bind(this.game));
+        }
       });
+
+      this._onHudKeydown = (e) => {
+        if (e.code !== 'Space') return;
+        const active = document.activeElement;
+        if (
+          active &&
+          (active.tagName === 'INPUT' ||
+            active.tagName === 'TEXTAREA' ||
+            active.isContentEditable)
+        )
+          return; // don't interfere with typing
+        e.preventDefault();
+
+        // ordered multipliers from TIMESCALE
+        const multipliers = Object.values(TIMESCALE)
+          .map((v) => v)
+          .sort((a, b) => a - b);
+
+        // if currently paused (game.running === false), go to first multiplier
+        if (!this.game.running) {
+          const next = multipliers[0] || TIMESCALE.NORMAL;
+          this.game.timeScale = next;
+          if (this.game.started) {
+            this.game.running = true;
+            this.game.lastTime = performance.now();
+            requestAnimationFrame(this.game.loop.bind(this.game));
+          }
+          if (this.timeScaleSelect) this.timeScaleSelect.value = String(next);
+          return;
+        }
+
+        // otherwise cycle to next multiplier or pause when past the last
+        const cur =
+          Number(this.game.timeScale) || multipliers[0] || TIMESCALE.NORMAL;
+        const idx = multipliers.indexOf(cur);
+        const nextIdx = idx >= 0 ? idx + 1 : 0;
+        if (nextIdx >= multipliers.length) {
+          // go to pause
+          this.game.running = false;
+          if (this.timeScaleSelect) this.timeScaleSelect.value = 'pause';
+        } else {
+          const next = multipliers[nextIdx];
+          this.game.timeScale = next;
+          if (this.timeScaleSelect) this.timeScaleSelect.value = String(next);
+        }
+      };
+
+      window.addEventListener('keydown', this._onHudKeydown);
+    }
   }
 
   _tick() {
@@ -227,8 +306,14 @@ export default class Hud {
       : 0;
 
     // ensure time scale select reflects current game setting
-    if (this.timeScaleSelect && !this.timeScaleSelect.value)
-      this.timeScaleSelect.value = String(this.game.timeScale || 1);
+    if (this.timeScaleSelect) {
+      if (!this.game.running && this.game.started)
+        this.timeScaleSelect.value = 'pause';
+      else
+        this.timeScaleSelect.value = String(
+          this.game.timeScale || TIMESCALE.NORMAL
+        );
+    }
 
     this.el.innerHTML = `
       <div>Wave: ${waveNum}</div>
